@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="fr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>LectureWrl.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">JaCoCoverage analysis of project &quot;calcul_bassin_versant&quot; (powered by JaCoCo from EclEmma)</a> &gt; <a href="index.source.html" class="el_package">Utilitaires</a> &gt; <span class="el_source">LectureWrl.java</span></div><h1>LectureWrl.java</h1><pre class="source lang-java linenums">/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package Utilitaires;
+
+import geometry.*;
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.StringTokenizer;
+
+/**
+ *
+ * @author Antoine
+ */
+public class LectureWrl {
+   
+    private final  String source;
+    private ArrayList&lt;Point3D&gt; listePoint;
+    private ArrayList&lt;Triangle&gt; listeTriangle;
+    
+<span class="nc" id="L26">    public LectureWrl(String source){</span>
+<span class="nc" id="L27">        this.source=source;</span>
+<span class="nc" id="L28">        listePoint=new ArrayList();</span>
+<span class="nc" id="L29">        listeTriangle=new ArrayList();</span>
+<span class="nc" id="L30">        lecture();</span>
+<span class="nc" id="L31">   }</span>
+
+    public ArrayList&lt;Point3D&gt; getListePoint() {
+<span class="nc" id="L34">        return listePoint;</span>
+    }
+
+    public void setListePoint(ArrayList&lt;Point3D&gt; listePoint) {
+<span class="nc" id="L38">        this.listePoint = listePoint;</span>
+<span class="nc" id="L39">    }</span>
+
+    public ArrayList&lt;Triangle&gt; getListeTriangle() {
+<span class="nc" id="L42">        return listeTriangle;</span>
+    }
+
+    public void setListeTriangle(ArrayList&lt;Triangle&gt; listeTriangle) {
+<span class="nc" id="L46">        this.listeTriangle = listeTriangle;</span>
+<span class="nc" id="L47">    }</span>
+    
+    
+    
+    /**
+     * Permet de lire un fichier au format wrl et de récupérer les informations qu'il contient (triangles du maillage)
+     */
+    @SuppressWarnings(&quot;empty-statement&quot;)
+    public void lecture(){
+        
+        try{
+        String ligne;
+        
+<span class="nc" id="L60">        BufferedReader fichier = new BufferedReader(new FileReader(source));</span>
+        
+<span class="nc bnc" id="L62" title="All 2 branches missed.">        while(!(&quot;#x y z pt&quot;.equals(fichier.readLine())));</span>
+        
+<span class="nc bnc" id="L64" title="All 2 branches missed.">        while(!(&quot;] # end point&quot;.equals(fichier.readLine()))){</span>
+<span class="nc" id="L65">            ligne=fichier.readLine();</span>
+<span class="nc" id="L66">            lecturePoints(ligne);</span>
+        }
+        
+<span class="nc bnc" id="L69" title="All 2 branches missed.">        for (int i=0;i&lt;3;i++){</span>
+<span class="nc" id="L70">                fichier.readLine();</span>
+                }
+        
+<span class="nc bnc" id="L73" title="All 2 branches missed.">        while(!(&quot;&quot;.equals(fichier.readLine()))){</span>
+<span class="nc" id="L74">            ligne=fichier.readLine();</span>
+           // lectureTriangles(ligne);
+        }
+        
+        
+        
+<span class="nc" id="L80">        fichier.close();</span>
+        }
+<span class="nc" id="L82">        catch(FileNotFoundException e){</span>
+<span class="nc" id="L83">            e.printStackTrace();</span>
+        }
+<span class="nc" id="L85">        catch(IOException e){</span>
+<span class="nc" id="L86">            e.printStackTrace();</span>
+<span class="nc" id="L87">        }</span>
+        
+        
+<span class="nc" id="L90">    }</span>
+
+    /**
+     * Permet de créer un nouveau point à partir de la ligne lue et de l'ajouter à la liste
+     * @param ligne 
+     */
+    private void lecturePoints(String ligne) {
+        
+<span class="nc" id="L98">        String delimiteurs = &quot; ,;&quot;;</span>
+        
+<span class="nc" id="L100">        StringTokenizer tokenizer = new StringTokenizer(ligne,delimiteurs);</span>
+
+            double x;
+            double y;
+            double z;
+            
+<span class="nc" id="L106">            x=Double.parseDouble(tokenizer.nextToken());</span>
+<span class="nc" id="L107">            y=Double.parseDouble(tokenizer.nextToken());</span>
+<span class="nc" id="L108">            z=Double.parseDouble(tokenizer.nextToken());</span>
+            
+<span class="nc" id="L110">        Point3D p= new Point3D(x,y,z);</span>
+        
+<span class="nc" id="L112">        listePoint.add(p);</span>
+        
+<span class="nc" id="L114">    }</span>
+
+    /**
+     * Permet de créer un nouveau triangle à partir de la ligne lue et de l'ajouter à la liste
+     * @param ligne 
+     */
+    
+    /**
+    private void lectureTriangles(String ligne) {
+        
+        String delimiteurs = &quot; ,;  \t&quot;;
+        
+        StringTokenizer tokenizer = new StringTokenizer(ligne,delimiteurs);
+
+            int a;
+            int b;
+            int c;
+            
+            a=Integer.parseInt(tokenizer.nextToken());
+            b=Integer.parseInt(tokenizer.nextToken());
+            c=Integer.parseInt(tokenizer.nextToken());
+            
+            Point3D pointa = listePoint.get(a);
+            Point3D pointb = listePoint.get(b);
+            Point3D pointc = listePoint.get(c);
+            Triangle t = new Triangle();
+            if(Vecteur.distAngle((new Vecteur(pointa, pointb)).calculAngle(),(new Vecteur(pointa, pointc)).calculAngle())&lt;Math.PI){
+            
+            t.setPoint1(pointa);
+            t.setPoint2(pointb);
+            t.setPoint3(pointc);
+            
+            }else{
+                
+            t.setPoint1(pointa);
+            t.setPoint2(pointc);
+            t.setPoint3(pointb);
+            
+            
+            } 
+            t.setSegment1(null);
+            t.setSegment2(null);
+            t.setSegment3(null); 
+            listeTriangle.add(t); 
+    }
+      */ 
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.2.201409121644</span></div></body></html>

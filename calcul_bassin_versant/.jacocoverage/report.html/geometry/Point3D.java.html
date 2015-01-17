@@ -5,6 +5,8 @@
  */
 package geometry;
 
+import java.util.ArrayList;
+
 /**
  * gere les objet de type Poin3D
  *
@@ -23,27 +25,28 @@ public class Point3D {
      * @param posy
      * @param posz
      */
-<span class="fc" id="L26">    public Point3D(double posx, double posy, double posz) {</span>
-<span class="fc" id="L27">        this.posx = posx;</span>
-<span class="fc" id="L28">        this.posy = posy;</span>
-<span class="fc" id="L29">        this.posz = posz;</span>
-<span class="fc" id="L30">    }</span>
-    
-<span class="fc" id="L32">    public Point3D(){</span>
-<span class="fc" id="L33">    this.posx = 0;</span>
-<span class="fc" id="L34">    this.posy = 0;</span>
-<span class="fc" id="L35">    this.posz = 0;</span>
-<span class="fc" id="L36">    }</span>
-    
+<span class="fc" id="L28">    public Point3D(double posx, double posy, double posz) {</span>
+<span class="fc" id="L29">        this.posx = posx;</span>
+<span class="fc" id="L30">        this.posy = posy;</span>
+<span class="fc" id="L31">        this.posz = posz;</span>
+<span class="fc" id="L32">    }</span>
+
+<span class="nc" id="L34">    public Point3D() {</span>
+<span class="nc" id="L35">        this.posx = 0;</span>
+<span class="nc" id="L36">        this.posy = 0;</span>
+<span class="nc" id="L37">        this.posz = 0;</span>
+<span class="nc" id="L38">    }</span>
+
     /**
      * Teste l'égalité entre 2 points
+     *
      * @param point
-     * @return 
+     * @return
      */
     public boolean equals(Point3D point) {
-<span class="fc bfc" id="L44" title="All 2 branches covered.">        return (this.getPosx() == point.getPosx()</span>
-<span class="fc bfc" id="L45" title="All 2 branches covered.">                &amp;&amp; this.getPosy() == point.getPosy()</span>
-<span class="pc bpc" id="L46" title="1 of 2 branches missed.">                &amp;&amp; this.getPosz() == point.getPosz());</span>
+<span class="fc bfc" id="L47" title="All 2 branches covered.">        return (this.getPosx() == point.getPosx()</span>
+<span class="fc bfc" id="L48" title="All 2 branches covered.">                &amp;&amp; this.getPosy() == point.getPosy()</span>
+<span class="pc bpc" id="L49" title="1 of 2 branches missed.">                &amp;&amp; this.getPosz() == point.getPosz());</span>
     }
 
     @Override
@@ -51,17 +54,16 @@ public class Point3D {
      * surcharge de toString
      */
     public String toString() {
-<span class="nc" id="L54">        return (&quot;\tx:&quot;+posx+&quot;\ty:&quot;+posy+&quot;\tz:&quot;+posz); //To change body of generated methods, choose Tools | Templates.</span>
+<span class="nc" id="L57">        return (&quot;\tx:&quot; + posx + &quot;\ty:&quot; + posy + &quot;\tz:&quot; + posz); //To change body of generated methods, choose Tools | Templates.</span>
     }
 
-    
     /**
      * Get the value of posz
      *
      * @return the value of posz
      */
     public double getPosz() {
-<span class="fc" id="L64">        return posz;</span>
+<span class="fc" id="L66">        return posz;</span>
     }
 
     /**
@@ -70,8 +72,8 @@ public class Point3D {
      * @param posz new value of posz
      */
     public void setPosz(double posz) {
-<span class="fc" id="L73">        this.posz = posz;</span>
-<span class="fc" id="L74">    }</span>
+<span class="fc" id="L75">        this.posz = posz;</span>
+<span class="fc" id="L76">    }</span>
 
     /**
      * Get the value of posy
@@ -79,7 +81,7 @@ public class Point3D {
      * @return the value of posy
      */
     public double getPosy() {
-<span class="fc" id="L82">        return posy;</span>
+<span class="fc" id="L84">        return posy;</span>
     }
 
     /**
@@ -88,8 +90,8 @@ public class Point3D {
      * @param posy new value of posy
      */
     public void setPosy(double posy) {
-<span class="fc" id="L91">        this.posy = posy;</span>
-<span class="fc" id="L92">    }</span>
+<span class="fc" id="L93">        this.posy = posy;</span>
+<span class="fc" id="L94">    }</span>
 
     /**
      * Get the value of posx
@@ -97,7 +99,7 @@ public class Point3D {
      * @return the value of posx
      */
     public double getPosx() {
-<span class="fc" id="L100">        return posx;</span>
+<span class="fc" id="L102">        return posx;</span>
     }
 
     /**
@@ -106,56 +108,128 @@ public class Point3D {
      * @param posx new value of posx
      */
     public void setPosx(double posx) {
-<span class="fc" id="L109">        this.posx = posx;</span>
-<span class="fc" id="L110">    }</span>
+<span class="fc" id="L111">        this.posx = posx;</span>
+<span class="fc" id="L112">    }</span>
 
     /**
-     * renvoie le point de projection d'un point sur un segment suivant un vecteur
+     * renvoie le point de projection d'un point sur un segment suivant un
+     * vecteur
+     *
      * @param segment
      * @param point
      * @param vecteur
-     * @return 
+     * @return
      */
-    public static Point3D intersection(Segment segment, Point3D point, Vecteur vecteur) {
+    public static Point3D intersection(Segment segment, Point3D point, Vecteur vecteur, ArrayList&lt;Point3D&gt; points) {
         double a1, b1, c1;
         double a2, b2, c2;
-<span class="fc" id="L122">        Point3D intersect = new Point3D(0, 0, 0);</span>
-<span class="fc" id="L123">        Point3D pointSeg1 = segment.getPoint1(); // pour simplifier l'écriture de plusieurs expressions</span>
-<span class="fc" id="L124">        Point3D pointSeg2 = segment.getPoint2();</span>
+<span class="fc" id="L126">        Point3D intersect = new Point3D(0, 0, 0);</span>
+<span class="fc" id="L127">        int pointSeg1 = segment.getPoint1(); </span>
+<span class="fc" id="L128">        int pointSeg2 = segment.getPoint2();</span>
 
-<span class="fc" id="L126">        a1 = vecteur.getValx();</span>
-<span class="fc" id="L127">        b1 = -vecteur.getValy();</span>
-<span class="fc" id="L128">        c1 = (a1 * point.getPosx() + b1 * point.getPosy());</span>
+<span class="fc" id="L130">        a1 = vecteur.getValx();</span>
+<span class="fc" id="L131">        b1 = -vecteur.getValy();</span>
+<span class="fc" id="L132">        c1 = (a1 * point.getPosx() + b1 * point.getPosy());</span>
 
-<span class="fc" id="L130">        Vecteur vect = new Vecteur(segment);</span>
-        
+<span class="fc" id="L134">        Vecteur vect = new Vecteur(segment, points);</span>
 
-<span class="fc" id="L133">        a2 = vect.getValx();</span>
-<span class="fc" id="L134">        b2 = -vect.getValy();</span>
-<span class="fc" id="L135">        c2 = (a2 * pointSeg1.getPosx() + b2 * pointSeg1.getPosy());</span>
-<span class="pc bpc" id="L136" title="3 of 4 branches missed.">        if ((a1 == a2) &amp;&amp; (b1 == b2)) {</span>
+<span class="fc" id="L136">        a2 = vect.getValx();</span>
+<span class="fc" id="L137">        b2 = -vect.getValy();</span>
+<span class="fc" id="L138">        c2 = (a2 * points.get(pointSeg1).getPosx() + b2 * points.get(pointSeg1).getPosy());</span>
+<span class="pc bpc" id="L139" title="3 of 4 branches missed.">        if ((a1 == a2) &amp;&amp; (b1 == b2)) {</span>
             //TODO gerer l'erreur dû au parrallélisme
         } else {
-<span class="fc" id="L139">            intersect.setPosx((c1 * b2 - c2 * b1) / (a1 * b2 - a2 * b1));</span>
-<span class="fc" id="L140">            intersect.setPosy((c1 * a2 - c2 * a1) / (b1 * a2 - b2 * a1));</span>
+<span class="fc" id="L142">            intersect.setPosx((c1 * b2 - c2 * b1) / (a1 * b2 - a2 * b1));</span>
+<span class="fc" id="L143">            intersect.setPosy((c1 * a2 - c2 * a1) / (b1 * a2 - b2 * a1));</span>
 
-<span class="pc bpc" id="L142" title="1 of 2 branches missed.">            if (pointSeg1.getPosx() == pointSeg2.getPosx()) {</span>
-<span class="nc" id="L143">                intersect.setPosz(pointSeg1.getPosz() + (pointSeg2.getPosz() - pointSeg1.getPosz()) * ((pointSeg1.getPosy() - intersect.getPosy()) / (pointSeg1.getPosy() - pointSeg2.getPosy())));</span>
+<span class="pc bpc" id="L145" title="1 of 2 branches missed.">            if (points.get(pointSeg1).getPosx() == points.get(pointSeg2).getPosx()) {</span>
+<span class="nc" id="L146">                intersect.setPosz(points.get(pointSeg1).getPosz() + (points.get(pointSeg2).getPosz() - points.get(pointSeg1).getPosz()) * ((points.get(pointSeg1).getPosy() - intersect.getPosy()) / (points.get(pointSeg1).getPosy() - points.get(pointSeg2).getPosy())));</span>
 
             } else {
-<span class="fc" id="L146">                intersect.setPosz(pointSeg1.getPosz() + (pointSeg2.getPosz() - pointSeg1.getPosz()) * ((pointSeg1.getPosx() - intersect.getPosx()) / (pointSeg1.getPosx() - pointSeg2.getPosx())));</span>
+<span class="fc" id="L149">                intersect.setPosz(points.get(pointSeg1).getPosz() + (points.get(pointSeg2).getPosz() - points.get(pointSeg1).getPosz()) * ((points.get(pointSeg1).getPosx() - intersect.getPosx()) / (points.get(pointSeg1).getPosx() - points.get(pointSeg2).getPosx())));</span>
             }
 
         }
-<span class="fc" id="L150">        return intersect;</span>
+<span class="fc" id="L153">        return intersect;</span>
 
     }
-    
-    public void ini(Point3D point){
-        
-        
-        
-<span class="nc" id="L158">    }</span>
+/*
+    public ArrayList&lt;Triangle&gt; calculBassin(ArrayList&lt;Triangle&gt; triangles, ArrayList&lt;Segment&gt; segment, ArrayList&lt;Point3D&gt; points) {
 
+        ArrayList&lt;Triangle&gt; bassinVersant = new ArrayList&lt;&gt;();
+
+        for (Triangle triangle : triangles) {
+            if (points.get(triangle.getPoint1()).equals(this)) {
+                if (triangle.getPoint2().getPosz() &gt;= this.getPosz()) {
+
+                    if (triangle.getSegment1().getTridroit() != null) {
+                        triangle.getSegment1().getTridroit().calculProjete(triangle.getSegment1(), bassinVersant);
+                    }
+                    if (triangle.getSegment1().getTrigauche() != null) {
+                        triangle.getSegment1().getTrigauche().calculProjete(triangle.getSegment1(), bassinVersant);
+                    }
+                }
+
+                if (triangle.getPoint3().getPosz() &gt;= this.getPosz()) {
+                    if (triangle.getSegment3().getTridroit() != null) {
+                        triangle.getSegment3().getTridroit().calculProjete(triangle.getSegment3(), bassinVersant);
+                    }
+                    if (triangle.getSegment3().getTrigauche() != null) {
+                        triangle.getSegment3().getTrigauche().calculProjete(triangle.getSegment3(), bassinVersant);
+                    }
+
+                }
+            }
+
+            if (points.get(triangle.getPoint2()).equals(this)) {
+                if (triangle.getPoint1().getPosz() &gt;= this.getPosz()) {
+
+                    if (triangle.getSegment1().getTridroit() != null) {
+                        triangle.getSegment1().getTridroit().calculProjete(triangle.getSegment1(), bassinVersant);
+                    }
+                    if (triangle.getSegment1().getTrigauche() != null) {
+                        triangle.getSegment1().getTrigauche().calculProjete(triangle.getSegment1(), bassinVersant);
+                    }
+                }
+
+                if (points.get(triangle.getPoint3()).getPosz() &gt;= this.getPosz()) {
+                    if (triangle.getSegment2().getTridroit() != null) {
+                        triangle.getSegment2().getTridroit().calculProjete(triangle.getSegment2(), bassinVersant);
+                    }
+                    if (triangle.getSegment2().getTrigauche() != null) {
+                        triangle.getSegment2().getTrigauche().calculProjete(triangle.getSegment2(), bassinVersant);
+                    }
+
+                }
+            }
+
+            if (points.get(triangle.getPoint3()).equals(this)) {
+                if (triangle.getPoint3().equals(this)) {
+                    if (triangle.getPoint2().getPosz() &gt;= this.getPosz()) {
+
+                        if (triangle.getSegment2().getTridroit() != null) {
+                            triangle.getSegment2().getTridroit().calculProjete(triangle.getSegment2(), bassinVersant);
+                        }
+                        if (triangle.getSegment2().getTrigauche() != null) {
+                            triangle.getSegment2().getTrigauche().calculProjete(triangle.getSegment2(), bassinVersant);
+                        }
+                    }
+
+                    if (points.get(triangle.getPoint1()).getPosz() &gt;= this.getPosz()) {
+                        if (triangle.getSegment3().getTridroit() != null) {
+                            triangle.getSegment3().getTridroit().calculProjete(triangle.getSegment3(), bassinVersant);
+                        }
+                        if (triangle.getSegment3().getTrigauche() != null) {
+                            triangle.getSegment3().getTrigauche().calculProjete(triangle.getSegment3(), bassinVersant);
+                        }
+
+                    }
+                }
+            }
+
+        }
+        return bassinVersant;
+    }
+*/
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.2.201409121644</span></div></body></html>

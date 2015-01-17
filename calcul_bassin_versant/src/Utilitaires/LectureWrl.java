@@ -18,7 +18,7 @@ import java.util.StringTokenizer;
  * @author Antoine
  */
 public class LectureWrl {
-    
+   
     private final  String source;
     private ArrayList<Point3D> listePoint;
     private ArrayList<Triangle> listeTriangle;
@@ -72,7 +72,7 @@ public class LectureWrl {
         
         while(!("".equals(fichier.readLine()))){
             ligne=fichier.readLine();
-            lectureTriangles(ligne);
+           // lectureTriangles(ligne);
         }
         
         
@@ -117,6 +117,8 @@ public class LectureWrl {
      * Permet de créer un nouveau triangle à partir de la ligne lue et de l'ajouter à la liste
      * @param ligne 
      */
+    
+    /**
     private void lectureTriangles(String ligne) {
         
         String delimiteurs = " ,;  \t";
@@ -154,5 +156,5 @@ public class LectureWrl {
             t.setSegment3(null); 
             listeTriangle.add(t); 
     }
-       
+      */ 
 }

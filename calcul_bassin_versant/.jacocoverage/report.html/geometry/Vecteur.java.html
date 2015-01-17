@@ -6,6 +6,7 @@
 package geometry;
 
 import static java.lang.Math.*;
+import java.util.ArrayList;
 
 /**
  * gere les objets de type vecteur
@@ -20,10 +21,10 @@ public class Vecteur {
     /**
      * Default constructor
      */
-<span class="fc" id="L23">    public Vecteur() {</span>
-<span class="fc" id="L24">        valx = 0;</span>
-<span class="fc" id="L25">        valy = 0;</span>
-<span class="fc" id="L26">    }</span>
+<span class="nc" id="L24">    public Vecteur() {</span>
+<span class="nc" id="L25">        valx = 0;</span>
+<span class="nc" id="L26">        valy = 0;</span>
+<span class="nc" id="L27">    }</span>
 
     /**
      * Classic constructor
@@ -31,20 +32,21 @@ public class Vecteur {
      * @param valx
      * @param valy
      */
-<span class="fc" id="L34">    public Vecteur(double valx, double valy) {</span>
-<span class="fc" id="L35">        this.valx = valx;</span>
-<span class="fc" id="L36">        this.valy = valy;</span>
-<span class="fc" id="L37">    }</span>
+<span class="fc" id="L35">    public Vecteur(double valx, double valy) {</span>
+<span class="fc" id="L36">        this.valx = valx;</span>
+<span class="fc" id="L37">        this.valy = valy;</span>
+<span class="fc" id="L38">    }</span>
 
     /**
-     * Constructor based on Segment
+     * Constructor based on Segment using an ArrayList of Point3D
      *
-     * @param segment
+     * @param segment the 
+     * @param points
      */
-<span class="fc" id="L44">    public Vecteur(Segment segment) {</span>
-<span class="fc" id="L45">        this.valx = segment.getPoint2().getPosx() - segment.getPoint1().getPosx();</span>
-<span class="fc" id="L46">        this.valy = segment.getPoint2().getPosy() - segment.getPoint1().getPosy();</span>
-<span class="fc" id="L47">    }</span>
+<span class="fc" id="L46">    public Vecteur(Segment segment, ArrayList&lt;Point3D&gt; points) {</span>
+<span class="fc" id="L47">        this.valx = points.get(segment.getPoint2()).getPosx() - points.get(segment.getPoint1()).getPosx();</span>
+<span class="fc" id="L48">        this.valy = points.get(segment.getPoint2()).getPosy() - points.get(segment.getPoint1()).getPosy();</span>
+<span class="fc" id="L49">    }</span>
 
     /**
      * Constructor based on 2 Point
@@ -52,10 +54,10 @@ public class Vecteur {
      * @param point1
      * @param point2
      */
-<span class="fc" id="L55">    public Vecteur(Point3D point1, Point3D point2) {</span>
-<span class="fc" id="L56">        this.valx = point2.getPosx() - point1.getPosx();</span>
-<span class="fc" id="L57">        this.valy = point2.getPosy() - point1.getPosy();</span>
-<span class="fc" id="L58">    }</span>
+<span class="fc" id="L57">    public Vecteur(Point3D point1, Point3D point2) {</span>
+<span class="fc" id="L58">        this.valx = point2.getPosx() - point1.getPosx();</span>
+<span class="fc" id="L59">        this.valy = point2.getPosy() - point1.getPosy();</span>
+<span class="fc" id="L60">    }</span>
 
     /**
      * Get the value of valy
@@ -63,7 +65,7 @@ public class Vecteur {
      * @return the value of valy
      */
     public double getValy() {
-<span class="fc" id="L66">        return valy;</span>
+<span class="fc" id="L68">        return valy;</span>
     }
 
     /**
@@ -72,8 +74,8 @@ public class Vecteur {
      * @param valy new value of valy
      */
     public void setValy(double valy) {
-<span class="fc" id="L75">        this.valy = valy;</span>
-<span class="fc" id="L76">    }</span>
+<span class="fc" id="L77">        this.valy = valy;</span>
+<span class="fc" id="L78">    }</span>
 
     /**
      * Get the value of valx
@@ -81,7 +83,7 @@ public class Vecteur {
      * @return the value of valx
      */
     public double getValx() {
-<span class="fc" id="L84">        return valx;</span>
+<span class="fc" id="L86">        return valx;</span>
     }
 
     /**
@@ -90,43 +92,41 @@ public class Vecteur {
      * @param valx new value of valx
      */
     public void setValx(double valx) {
-<span class="fc" id="L93">        this.valx = valx;</span>
-<span class="fc" id="L94">    }</span>
+<span class="fc" id="L95">        this.valx = valx;</span>
+<span class="fc" id="L96">    }</span>
 
     /**
      * renvoie l'angle d'un vecteur en radians
      * @return 
      */
     public double calculAngle() {
-<span class="fc" id="L101">        double angle = 0;</span>
-<span class="pc bpc" id="L102" title="1 of 4 branches missed.">        if (this.getValx() == 0 &amp;&amp; this.getValy() == 0) {</span>
+<span class="fc" id="L103">        double angle = 0;</span>
+<span class="fc bfc" id="L104" title="All 4 branches covered.">        if (this.getValx() == 0 &amp;&amp; this.getValy() == 0) {</span>
             // ce cas ne doit pas etre atteint normalement
         } else {
-<span class="fc bfc" id="L105" title="All 2 branches covered.">            if (asin(this.getValy() / (sqrt(this.getValx() * this.getValx() + this.getValy() * this.getValy()))) &gt;= 0) {</span>
-<span class="fc" id="L106">                angle =  acos(this.getValx() / (sqrt(this.getValx() * this.getValx() + this.getValy() * this.getValy())));</span>
-            } else {
+<span class="fc bfc" id="L107" title="All 2 branches covered.">            if (asin(this.getValy() / (sqrt(this.getValx() * this.getValx() + this.getValy() * this.getValy()))) &gt;= 0) {</span>
 <span class="fc" id="L108">                angle =  acos(this.getValx() / (sqrt(this.getValx() * this.getValx() + this.getValy() * this.getValy())));</span>
-<span class="fc" id="L109">                angle =  (-angle + 2*Math.PI);</span>
+            } else {
+<span class="fc" id="L110">                angle =  acos(this.getValx() / (sqrt(this.getValx() * this.getValx() + this.getValy() * this.getValy())));</span>
+<span class="fc" id="L111">                angle =  (-angle + 2*Math.PI);</span>
             }
         }
-<span class="fc" id="L112">        return angle;</span>
+<span class="fc" id="L114">        return angle;</span>
     }
     /**
-     * calcul de la distance angulaire entre 2 angles dans le sens de rotation trigonométrique
+     * calcul de la distance angulaire entre 2 angles dans le sens de rotation trigonométrique (de l'angle
      * @param angle1
      * @param angle2
-     * @return distance distance angulaire entre angle1 et angle2 dans le sens trigonométrique
+     * @return distance distance angulaire entre angle1 et angle2
      */
     public static double distAngle(double angle1, double angle2){
+ 
         double distance;
-<span class="fc" id="L122">        distance = angle2 - angle1;</span>
-<span class="fc bfc" id="L123" title="All 2 branches covered.">        if(distance &lt;0){</span>
-<span class="fc" id="L124">            distance =  (distance + 2*Math.PI);</span>
-            
+<span class="fc" id="L125">        distance = angle2 - angle1;</span>
+<span class="fc bfc" id="L126" title="All 2 branches covered.">        if(distance &lt; 0){</span>
+<span class="fc" id="L127">            distance = (distance + 2*Math.PI);</span>
         }
-       // System.out.println(distance);
-<span class="fc" id="L128">        return distance;</span>
-        
+<span class="fc" id="L129">        return distance;</span>
     }
 
 }

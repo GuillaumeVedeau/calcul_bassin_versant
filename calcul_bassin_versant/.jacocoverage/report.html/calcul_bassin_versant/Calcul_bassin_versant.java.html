@@ -5,6 +5,7 @@
  */
 package calcul_bassin_versant;
 
+import Utilitaires.LectureWrl;
 import geometry.*;
 import java.util.ArrayList;
 
@@ -13,7 +14,7 @@ import java.util.ArrayList;
  *
  * @author Utilisateur
  */
-<span class="nc" id="L16">public class Calcul_bassin_versant {</span>
+<span class="nc" id="L17">public class Calcul_bassin_versant {</span>
 
     /**
      * @param args the command line arguments
@@ -21,83 +22,85 @@ import java.util.ArrayList;
     public static void main(String[] args) {
         // TODO code application logic here
 
-<span class="fc" id="L24">        Point3D pointA = new Point3D(0, 0, 10);</span>
-<span class="fc" id="L25">        Point3D pointB = new Point3D(1, 0, 8);</span>
-<span class="fc" id="L26">        Point3D pointC = new Point3D(0, 1, 8);</span>
-<span class="fc" id="L27">        Point3D pointD = new Point3D(1, 1, 5);</span>
-<span class="fc" id="L28">        Point3D pointE = new Point3D(2, 0, 5);</span>
-<span class="fc" id="L29">        Point3D pointF = new Point3D(2, 1, 2);</span>
-<span class="fc" id="L30">        Point3D pointG = new Point3D(0, 2, 5);</span>
-<span class="fc" id="L31">        Point3D pointH = new Point3D(1, 2, 2);</span>
-<span class="fc" id="L32">        Point3D pointI = new Point3D(2, 2, 0);</span>
+<span class="fc" id="L25">        Point3D pointA = new Point3D(0, 0, 10);</span>
+<span class="fc" id="L26">        Point3D pointB = new Point3D(1, 0, 8);</span>
+<span class="fc" id="L27">        Point3D pointC = new Point3D(0, 1, 8);</span>
+<span class="fc" id="L28">        Point3D pointD = new Point3D(1, 1, 5);</span>
+<span class="fc" id="L29">        Point3D pointE = new Point3D(2, 0, 5);</span>
+<span class="fc" id="L30">        Point3D pointF = new Point3D(2, 1, 2);</span>
+<span class="fc" id="L31">        Point3D pointG = new Point3D(0, 2, 5);</span>
+<span class="fc" id="L32">        Point3D pointH = new Point3D(1, 2, 2);</span>
+<span class="fc" id="L33">        Point3D pointI = new Point3D(2, 2, 0);</span>
+        
+<span class="fc" id="L35">        ArrayList&lt;Point3D&gt; points = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L36">        points.add(new Point3D(0,0,0));</span>
+<span class="fc" id="L37">        points.add(pointA);</span>
+<span class="fc" id="L38">        points.add(pointB);</span>
+<span class="fc" id="L39">        points.add(pointC);</span>
+<span class="fc" id="L40">        points.add(pointD);</span>
+<span class="fc" id="L41">        points.add(pointE);</span>
+<span class="fc" id="L42">        points.add(pointF);</span>
+<span class="fc" id="L43">        points.add(pointG);</span>
+<span class="fc" id="L44">        points.add(pointH);</span>
+<span class="fc" id="L45">        points.add(pointI);</span>
 
-<span class="fc" id="L34">        Segment segAB = new Segment(pointA, pointB);</span>
-<span class="fc" id="L35">        Segment segBD = new Segment(pointB, pointD);</span>
-<span class="fc" id="L36">        Segment segBC = new Segment(pointB, pointC);</span>
-<span class="fc" id="L37">        Segment segAC = new Segment(pointA, pointC);</span>
-<span class="fc" id="L38">        Segment segCD = new Segment(pointC, pointD);</span>
-<span class="fc" id="L39">        Segment segBE = new Segment(pointB, pointE);</span>
-<span class="fc" id="L40">        Segment segEF = new Segment(pointE, pointF);</span>
-<span class="fc" id="L41">        Segment segDF = new Segment(pointD, pointF);</span>
-<span class="fc" id="L42">        Segment segBF = new Segment(pointB, pointF);</span>
-<span class="fc" id="L43">        Segment segFI = new Segment(pointF, pointI);</span>
-<span class="fc" id="L44">        Segment segHI = new Segment(pointH, pointI);</span>
-<span class="fc" id="L45">        Segment segGH = new Segment(pointG, pointH);</span>
-<span class="fc" id="L46">        Segment segCG = new Segment(pointC, pointG);</span>
-<span class="fc" id="L47">        Segment segDG = new Segment(pointD, pointG);  </span>
-<span class="fc" id="L48">        Segment segDH = new Segment(pointD, pointH);</span>
-<span class="fc" id="L49">        Segment segFH = new Segment(pointF, pointH);</span>
+        
+<span class="fc" id="L48">        Triangle triABC = new Triangle(1, 2, 3);</span>
+<span class="fc" id="L49">        Triangle triBDC = new Triangle(2,4,3);</span>
+<span class="fc" id="L50">        Triangle triBFD = new Triangle(2,6,4);</span>
+<span class="fc" id="L51">        Triangle triBEF = new Triangle(2,5,6);</span>
+<span class="fc" id="L52">        Triangle triCDG = new Triangle(3,4,7);</span>
+<span class="fc" id="L53">        Triangle triDFH = new Triangle(4,6,8);</span>
+<span class="fc" id="L54">        Triangle triFIH = new Triangle(6,9,8);</span>
+<span class="fc" id="L55">        Triangle triDHG = new Triangle(4,8,7);</span>
+        
+<span class="fc" id="L57">        ArrayList&lt;Triangle&gt; triangles = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L58">        ArrayList&lt;Segment&gt; segments = new ArrayList&lt;&gt;();</span>
+        
+<span class="fc" id="L60">        segments.add(new Segment(0,0));</span>
+<span class="fc" id="L61">        triangles.add(new Triangle(0,0,0));</span>
+<span class="fc" id="L62">        triangles.add(triABC);</span>
+<span class="fc" id="L63">        triangles.add(triBDC);</span>
+<span class="fc" id="L64">        triangles.add(triBFD);</span>
+<span class="fc" id="L65">        triangles.add(triBEF);</span>
+<span class="fc" id="L66">        triangles.add(triCDG);</span>
+<span class="fc" id="L67">        triangles.add(triDHG);</span>
+<span class="fc" id="L68">        triangles.add(triDFH);</span>
+<span class="fc" id="L69">        triangles.add(triFIH);</span>
+        
+<span class="fc" id="L71">        Triangle.construction(triangles, segments);</span>
+<span class="fc" id="L72">        ArrayList&lt;Triangle&gt; resultat = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L73">        int segHI = (new Segment(8,9)).search(segments, points);</span>
+        
+        
+        
+        
+        
+<span class="fc bfc" id="L79" title="All 2 branches covered.">        for(Triangle triangle : triangles){</span>
+<span class="fc" id="L80">        System.out.println(triangle);</span>
+<span class="fc" id="L81">        }</span>
+        
+<span class="fc bfc" id="L83" title="All 2 branches covered.">        for(Segment segment : segments){</span>
+<span class="fc" id="L84">        System.out.println(segment);</span>
+<span class="fc" id="L85">        }</span>
+        
+       
+<span class="fc" id="L88">       System.out.println(segHI);</span>
+<span class="fc" id="L89">        triFIH.calculProjete(segHI,triangles, segments, points, resultat);</span>
+<span class="fc" id="L90">        System.out.println(resultat.size());</span>
 
-<span class="fc" id="L51">        Triangle triABC = new Triangle(segAB, segBC, segAC);</span>
-<span class="fc" id="L52">        Triangle triBDC = new Triangle(segBD, segCD, segBC);</span>
-<span class="fc" id="L53">        Triangle triBFD = new Triangle(segBF,segDF,segBD);</span>
-<span class="fc" id="L54">        Triangle triBEF = new Triangle(segBE,segEF,segBF);</span>
-<span class="fc" id="L55">        Triangle triCDG = new Triangle(segCD,segDG,segCG);</span>
-<span class="fc" id="L56">        Triangle triDHG = new Triangle(segDH,segGH,segDG);</span>
-<span class="fc" id="L57">        Triangle triDFH = new Triangle(segDF,segFH,segDH);</span>
-<span class="fc" id="L58">        Triangle triFIH = new Triangle(segFI,segHI,segFH);</span>
-        
-<span class="fc" id="L60">        ArrayList&lt;Triangle&gt; triangles = new ArrayList&lt;&gt;();</span>
-<span class="fc" id="L61">        ArrayList&lt;Segment&gt; segments = new ArrayList&lt;&gt;();</span>
-        
-<span class="fc" id="L63">        triangles.add(triABC);</span>
-<span class="fc" id="L64">        triangles.add(triBDC);</span>
-<span class="fc" id="L65">        triangles.add(triBFD);</span>
-<span class="fc" id="L66">        triangles.add(triBEF);</span>
-<span class="fc" id="L67">        triangles.add(triCDG);</span>
-<span class="fc" id="L68">        triangles.add(triDHG);</span>
-<span class="fc" id="L69">        triangles.add(triDFH);</span>
-<span class="fc" id="L70">        triangles.add(triFIH);</span>
-        
-<span class="fc" id="L72">        segments.add(segAB);</span>
-<span class="fc" id="L73">        segments.add(segBD);</span>
-<span class="fc" id="L74">        segments.add(segBC);</span>
-<span class="fc" id="L75">        segments.add(segAC);</span>
-<span class="fc" id="L76">        segments.add(segCD);</span>
-<span class="fc" id="L77">        segments.add(segBE);</span>
-<span class="fc" id="L78">        segments.add(segEF);</span>
-<span class="fc" id="L79">        segments.add(segDF);</span>
-<span class="fc" id="L80">        segments.add(segBF);</span>
-<span class="fc" id="L81">        segments.add(segFI);</span>
-<span class="fc" id="L82">        segments.add(segHI);</span>
-<span class="fc" id="L83">        segments.add(segGH);</span>
-<span class="fc" id="L84">        segments.add(segCG);</span>
-<span class="fc" id="L85">        segments.add(segDG);</span>
-<span class="fc" id="L86">        segments.add(segDH);</span>
-<span class="fc" id="L87">        segments.add(segFH);</span>
-        
-<span class="fc bfc" id="L89" title="All 2 branches covered.">        for(Segment segment: segments){</span>
-<span class="fc" id="L90">            segment.chercheTriangle(triangles);</span>
-<span class="fc" id="L91">        }</span>
-        
-<span class="fc" id="L93">        ArrayList&lt;Triangle&gt; resultat = new ArrayList&lt;&gt;();</span>
-        
-<span class="fc" id="L95">        triFIH.calculProjete(segHI, resultat);</span>
-        /*System.out.println(resultat.size());
-        System.out.println(resultat.get(0));
-        System.out.println(resultat.get(1));*/
-
-<span class="fc" id="L100">    }</span>
+<span class="fc bfc" id="L92" title="All 2 branches covered.">         for(Triangle triangle : triangles){</span>
+<span class="fc" id="L93">        System.out.println(triangle);</span>
+<span class="fc" id="L94">        }</span>
+       
+        /*
+       
+        LectureWrl test = new LectureWrl(&quot;C:/Users/Utilisateur/Documents/NetBeansProjects/calcul_bassin_versant/calcul_bassin_versant/Chezine.wrl&quot;);
+        System.out.println(test.getListeTriangle().get(0));
+        Triangle.construction(test.getListeTriangle(),new ArrayList&lt;&gt;());
+        System.out.println(test.getListeTriangle().get(0).getSegment1().getPoint1());
+        System.out.println(test.getListePoint().get(502).calculBassin(test.getListeTriangle()).size());*/
+<span class="fc" id="L103">    }</span>
 
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.2.201409121644</span></div></body></html>

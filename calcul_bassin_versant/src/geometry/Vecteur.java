@@ -6,6 +6,7 @@
 package geometry;
 
 import static java.lang.Math.*;
+import java.util.ArrayList;
 
 /**
  * gere les objets de type vecteur
@@ -37,13 +38,14 @@ public class Vecteur {
     }
 
     /**
-     * Constructor based on Segment
+     * Constructor based on Segment using an ArrayList of Point3D
      *
-     * @param segment
+     * @param segment the 
+     * @param points
      */
-    public Vecteur(Segment segment) {
-        this.valx = segment.getPoint2().getPosx() - segment.getPoint1().getPosx();
-        this.valy = segment.getPoint2().getPosy() - segment.getPoint1().getPosy();
+    public Vecteur(Segment segment, ArrayList<Point3D> points) {
+        this.valx = points.get(segment.getPoint2()).getPosx() - points.get(segment.getPoint1()).getPosx();
+        this.valy = points.get(segment.getPoint2()).getPosy() - points.get(segment.getPoint1()).getPosy();
     }
 
     /**
@@ -112,21 +114,19 @@ public class Vecteur {
         return angle;
     }
     /**
-     * calcul de la distance angulaire entre 2 angles dans le sens de rotation trigonométrique
+     * calcul de la distance angulaire entre 2 angles dans le sens de rotation trigonométrique (de l'angle
      * @param angle1
      * @param angle2
-     * @return distance distance angulaire entre angle1 et angle2 dans le sens trigonométrique
+     * @return distance distance angulaire entre angle1 et angle2
      */
     public static double distAngle(double angle1, double angle2){
+ 
         double distance;
         distance = angle2 - angle1;
-        if(distance <0){
-            distance =  (distance + 2*Math.PI);
-            
+        if(distance < 0){
+            distance = (distance + 2*Math.PI);
         }
-       // System.out.println(distance);
         return distance;
-        
     }
 
 }

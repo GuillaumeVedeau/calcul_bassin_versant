@@ -31,36 +31,34 @@ public class Calcul_bassin_versant {
         Point3D pointG = new Point3D(0, 2, 5);
         Point3D pointH = new Point3D(1, 2, 2);
         Point3D pointI = new Point3D(2, 2, 0);
+        
+        ArrayList<Point3D> points = new ArrayList<>();
+        points.add(new Point3D(0,0,0));
+        points.add(pointA);
+        points.add(pointB);
+        points.add(pointC);
+        points.add(pointD);
+        points.add(pointE);
+        points.add(pointF);
+        points.add(pointG);
+        points.add(pointH);
+        points.add(pointI);
 
-        Segment segAB = new Segment(pointA, pointB);
-        Segment segBD = new Segment(pointB, pointD);
-        Segment segBC = new Segment(pointB, pointC);
-        Segment segAC = new Segment(pointA, pointC);
-        Segment segCD = new Segment(pointC, pointD);
-        Segment segBE = new Segment(pointB, pointE);
-        Segment segEF = new Segment(pointE, pointF);
-        Segment segDF = new Segment(pointD, pointF);
-        Segment segBF = new Segment(pointB, pointF);
-        Segment segFI = new Segment(pointF, pointI);
-        Segment segHI = new Segment(pointH, pointI);
-        Segment segGH = new Segment(pointG, pointH);
-        Segment segCG = new Segment(pointC, pointG);
-        Segment segDG = new Segment(pointD, pointG);  
-        Segment segDH = new Segment(pointD, pointH);
-        Segment segFH = new Segment(pointF, pointH);
-
-        Triangle triABC = new Triangle(segAB, segBC, segAC);
-        Triangle triBDC = new Triangle(segBD, segCD, segBC);
-        Triangle triBFD = new Triangle(segBF,segDF,segBD);
-        Triangle triBEF = new Triangle(segBE,segEF,segBF);
-        Triangle triCDG = new Triangle(segCD,segDG,segCG);
-        Triangle triDHG = new Triangle(segDH,segGH,segDG);
-        Triangle triDFH = new Triangle(segDF,segFH,segDH);
-        Triangle triFIH = new Triangle(segFI,segHI,segFH);
+        
+        Triangle triABC = new Triangle(1, 2, 3);
+        Triangle triBDC = new Triangle(2,4,3);
+        Triangle triBFD = new Triangle(2,6,4);
+        Triangle triBEF = new Triangle(2,5,6);
+        Triangle triCDG = new Triangle(3,4,7);
+        Triangle triDFH = new Triangle(4,6,8);
+        Triangle triFIH = new Triangle(6,9,8);
+        Triangle triDHG = new Triangle(4,8,7);
         
         ArrayList<Triangle> triangles = new ArrayList<>();
         ArrayList<Segment> segments = new ArrayList<>();
         
+        segments.add(new Segment(0,0));
+        triangles.add(new Triangle(0,0,0));
         triangles.add(triABC);
         triangles.add(triBDC);
         triangles.add(triBFD);
@@ -70,45 +68,38 @@ public class Calcul_bassin_versant {
         triangles.add(triDFH);
         triangles.add(triFIH);
         
-        segments.add(segAB);
-        segments.add(segBD);
-        segments.add(segBC);
-        segments.add(segAC);
-        segments.add(segCD);
-        segments.add(segBE);
-        segments.add(segEF);
-        segments.add(segDF);
-        segments.add(segBF);
-        segments.add(segFI);
-        segments.add(segHI);
-        segments.add(segGH);
-        segments.add(segCG);
-        segments.add(segDG);
-        segments.add(segDH);
-        segments.add(segFH);
-        
-        for(Segment segment: segments){
-            segment.chercheTriangle(triangles);
-        }
-        
+        Triangle.construction(triangles, segments);
         ArrayList<Triangle> resultat = new ArrayList<>();
+        int segHI = (new Segment(8,9)).search(segments, points);
         
-        triFIH.calculProjete(segHI, resultat);
+        
+        
+        
+        
+        /*for(Triangle triangle : triangles){
+        System.out.println(triangle);
+        }*/
+        
+       /* for(Segment segment : segments){
+        System.out.println(segment);
+        }*/
+        
+       
+
+        triFIH.calculProjete(segHI,triangles, segments, points, resultat);
         System.out.println(resultat.size());
-        System.out.println(resultat.get(0));
-        System.out.println(resultat.get(1));
-        System.out.println(resultat.get(2));
-        System.out.println(resultat.get(3));
-        System.out.println(resultat.get(4));
-        System.out.println(resultat.get(5));
-        
-       /* LectureWrl test = new LectureWrl("C:/Users/Utilisateur/Documents/NetBeansProjects/calcul_bassin_versant/calcul_bassin_versant/Chezine.wrl");
+
+         for(Triangle triangle : resultat){
+        System.out.println(triangle);
+        }
+       
+        /*
+       
+        LectureWrl test = new LectureWrl("C:/Users/Utilisateur/Documents/NetBeansProjects/calcul_bassin_versant/calcul_bassin_versant/Chezine.wrl");
         System.out.println(test.getListeTriangle().get(0));
         Triangle.construction(test.getListeTriangle(),new ArrayList<>());
         System.out.println(test.getListeTriangle().get(0).getSegment1().getPoint1());
-        System.out.println(test.getListePoint().get(22).calculBassin(triangles).size());*/
-        
-        System.out.println(pointF.calculBassin(triangles).size());
+        System.out.println(test.getListePoint().get(502).calculBassin(test.getListeTriangle()).size());*/
     }
 
 }

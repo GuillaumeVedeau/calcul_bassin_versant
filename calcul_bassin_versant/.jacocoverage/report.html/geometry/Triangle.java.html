@@ -14,84 +14,293 @@ import java.util.ArrayList;
  */
 public class Triangle {
 
-    private Segment segment1;
-    private Segment segment2;
-    private Segment segment3;
+    private int segment1;
+    private int segment2;
+    private int segment3;
 
-    private Point3D point1;
-    private Point3D point2;
-    private Point3D point3;
+    private int point1;
+    private int point2;
+    private int point3;
     // approximation par defaut faite sur les calcul d'angle (1°)
 <span class="fc" id="L25">    private static double approximationAngulaire = 0.16;</span>
 
     /**
-     * basic constructor based on Segment l'ordre des points est déterminé en
-     * cherchant celui qui est commun aux segments 1 et 2
+     * Basic constructor based on Segment :the order of the point is based on
+     * the common point between each segment
      *
      * @param segment1
      * @param segment2
      * @param segment3
+     * @param segments
+     * @param points
      */
-<span class="fc" id="L35">    public Triangle(Segment segment1, Segment segment2, Segment segment3) {</span>
-<span class="fc" id="L36">        this.segment1 = segment1;</span>
-<span class="fc" id="L37">        this.segment2 = segment2;</span>
-<span class="fc" id="L38">        this.segment3 = segment3;</span>
+<span class="fc" id="L37">    public Triangle(int segment1, int segment2, int segment3, ArrayList&lt;Segment&gt; segments, ArrayList&lt;Point3D&gt; points) {</span>
 
-<span class="fc bfc" id="L40" title="All 4 branches covered.">        if (segment1.getPoint1() == segment2.getPoint1() || segment1.getPoint1() == segment2.getPoint2()) {</span>
-<span class="fc" id="L41">            this.point1 = segment1.getPoint2();</span>
-<span class="fc" id="L42">            this.point2 = segment1.getPoint1();</span>
+<span class="fc" id="L39">        this.segment1 = segment1;</span>
+<span class="fc" id="L40">        this.segment2 = segment2;</span>
+<span class="fc" id="L41">        this.segment3 = segment3;</span>
 
-<span class="fc bfc" id="L44" title="All 2 branches covered.">            if (segment1.getPoint1() == segment2.getPoint1()) {</span>
-<span class="fc" id="L45">                this.point3 = segment2.getPoint2();</span>
+<span class="fc bfc" id="L43" title="All 4 branches covered.">        if (segments.get(segment1).getPoint1() == segments.get(segment2).getPoint1() || segments.get(segment1).getPoint1() == segments.get(segment2).getPoint2()) {</span>
+<span class="fc" id="L44">            this.point1 = segments.get(segment1).getPoint2();</span>
+<span class="fc" id="L45">            this.point2 = segments.get(segment1).getPoint1();</span>
+
+<span class="fc bfc" id="L47" title="All 2 branches covered.">            if (segments.get(segment1).getPoint1() == segments.get(segment2).getPoint1()) {</span>
+<span class="fc" id="L48">                this.point3 = segments.get(segment2).getPoint2();</span>
             } else {
-<span class="fc" id="L47">                this.point3 = segment2.getPoint1();</span>
+<span class="fc" id="L50">                this.point3 = segments.get(segment2).getPoint1();</span>
             }
         } else {
-<span class="fc" id="L50">            this.point1 = segment1.getPoint1();</span>
-<span class="fc" id="L51">            this.point2 = segment1.getPoint2();</span>
+<span class="fc" id="L53">            this.point1 = segments.get(segment1).getPoint1();</span>
+<span class="fc" id="L54">            this.point2 = segments.get(segment1).getPoint2();</span>
 
-<span class="fc bfc" id="L53" title="All 2 branches covered.">            if (segment1.getPoint2() == segment2.getPoint1()) {</span>
-<span class="fc" id="L54">                this.point3 = segment2.getPoint2();</span>
+<span class="fc bfc" id="L56" title="All 2 branches covered.">            if (segments.get(segment1).getPoint2() == segments.get(segment2).getPoint1()) {</span>
+<span class="fc" id="L57">                this.point3 = segments.get(segment2).getPoint2();</span>
             } else {
-<span class="fc" id="L56">                this.point3 = segment2.getPoint1();</span>
+<span class="fc" id="L59">                this.point3 = segments.get(segment2).getPoint1();</span>
             }
         }
-<span class="fc" id="L59">    }</span>
+<span class="fc" id="L62">    }</span>
 
     /**
-     * basic constructor based on Point
+     * basic constructor based on Point It cannot be used as it is in the
+     * program, but need to be called by the other method construction
+     * beforehand.
      *
      * @param point1
      * @param point2
      * @param point3
      */
-<span class="nc" id="L68">    public Triangle(Point3D point1, Point3D point2, Point3D point3) {</span>
-<span class="nc" id="L69">        this.point1 = point1;</span>
-<span class="nc" id="L70">        this.point2 = point2;</span>
-<span class="nc" id="L71">        this.point3 = point3;</span>
-<span class="nc" id="L72">        this.segment1 = new Segment(point1, point2);</span>
-<span class="nc" id="L73">        this.segment2 = new Segment(point2, point3);</span>
-<span class="nc" id="L74">        this.segment3 = new Segment(point3, point1);</span>
-<span class="nc" id="L75">    }</span>
+<span class="fc" id="L73">    public Triangle(int point1, int point2, int point3) {</span>
+<span class="fc" id="L74">        this.point1 = point1;</span>
+<span class="fc" id="L75">        this.point2 = point2;</span>
+<span class="fc" id="L76">        this.point3 = point3;</span>
+<span class="fc" id="L77">        this.segment1 = 0;</span>
+<span class="fc" id="L78">        this.segment2 = 0;</span>
+<span class="fc" id="L79">        this.segment3 = 0;</span>
+<span class="fc" id="L80">    }</span>
 
     /**
      * default constructor
      */
-<span class="fc" id="L80">    public Triangle() {</span>
-<span class="fc" id="L81">        this.point1 = new Point3D(0, 0, 0);</span>
-<span class="fc" id="L82">        this.point2 = new Point3D(0, 0, 0);</span>
-<span class="fc" id="L83">        this.point3 = new Point3D(0, 0, 0);</span>
-<span class="fc" id="L84">        this.segment1 = new Segment(point1, point2);</span>
-<span class="fc" id="L85">        this.segment2 = new Segment(point2, point3);</span>
-<span class="fc" id="L86">        this.segment3 = new Segment(point3, point1);</span>
-<span class="fc" id="L87">    }</span>
+<span class="nc" id="L85">    public Triangle() {</span>
+<span class="nc" id="L86">        this.point1 = 0;</span>
+<span class="nc" id="L87">        this.point2 = 0;</span>
+<span class="nc" id="L88">        this.point3 = 0;</span>
+<span class="nc" id="L89">        this.segment1 = 0;</span>
+<span class="nc" id="L90">        this.segment2 = 0;</span>
+<span class="nc" id="L91">        this.segment3 = 0;</span>
+<span class="nc" id="L92">    }</span>
+
+    /**
+     * Get the value of segment3
+     *
+     * @return the value of segment3
+     */
+    public int getSegment3() {
+<span class="fc" id="L100">        return segment3;</span>
+    }
+
+    /**
+     * Set the value of segment3
+     *
+     * @param segment3 new value of segment3
+     */
+    public void setSegment3(int segment3) {
+<span class="fc" id="L109">        this.segment3 = segment3;</span>
+<span class="fc" id="L110">    }</span>
+
+    /**
+     * Get the value of segment2
+     *
+     * @return the value of segment2
+     */
+    public int getSegment2() {
+<span class="fc" id="L118">        return segment2;</span>
+    }
+
+    /**
+     * Set the value of segment2
+     *
+     * @param segment2 new value of segment2
+     */
+    public void setSegment2(int segment2) {
+<span class="fc" id="L127">        this.segment2 = segment2;</span>
+<span class="fc" id="L128">    }</span>
+
+    /**
+     * Get the value of segment1
+     *
+     * @return the value of segment1
+     */
+    public int getSegment1() {
+<span class="fc" id="L136">        return segment1;</span>
+    }
+
+    /**
+     * Set the value of segment1
+     *
+     * @param segment1 new value of segment1
+     */
+    public void setSegment1(int segment1) {
+<span class="fc" id="L145">        this.segment1 = segment1;</span>
+<span class="fc" id="L146">    }</span>
+
+    /**
+     * Get the value of point1
+     *
+     * @return the value of point1
+     */
+    public int getPoint1() {
+<span class="fc" id="L154">        return point1;</span>
+    }
+
+    /**
+     * Set the value of segment1
+     *
+     * @param point1 new value of point1
+     */
+    public void setPoint1(int point1) {
+<span class="nc" id="L163">        this.point1 = point1;</span>
+<span class="nc" id="L164">    }</span>
+
+    /**
+     * Get the value of point2
+     *
+     * @return the value of point2
+     */
+    public int getPoint2() {
+<span class="fc" id="L172">        return point2;</span>
+    }
+
+    /**
+     * Set the value of segment2
+     *
+     * @param point2 new value of point2
+     */
+    public void setPoint2(int point2) {
+<span class="nc" id="L181">        this.point2 = point2;</span>
+<span class="nc" id="L182">    }</span>
+
+    /**
+     * Get the value of point3
+     *
+     * @return the value of point3
+     */
+    public int getPoint3() {
+<span class="fc" id="L190">        return point3;</span>
+    }
+
+    /**
+     * Set the value of segment3
+     *
+     * @param point3 new value of point3
+     */
+    public void setPoint3(int point3) {
+<span class="nc" id="L199">        this.point3 = point3;</span>
+<span class="nc" id="L200">    }</span>
+
+    /**
+     * Build the objects Segment needed in the program and
+     *
+     * @param triangles
+     * @param segments if there are allready some
+     */
+    public static void construction(ArrayList&lt;Triangle&gt; triangles, ArrayList&lt;Segment&gt; segments) {
+
+        boolean found1, found2, found3;
+        int posSegment;
+<span class="fc" id="L212">        int posTriangle = 0;</span>
+
+<span class="fc bfc" id="L214" title="All 2 branches covered.">        for (Triangle triangle : triangles) {</span>
+
+<span class="pc bpc" id="L216" title="1 of 2 branches missed.">            if (triangle != null) {</span>
+
+<span class="pc bpc" id="L218" title="1 of 2 branches missed.">                if (triangle.getSegment1() &lt;= 0) {</span>
+
+<span class="fc" id="L220">                    found1 = false;</span>
+<span class="fc" id="L221">                    posSegment = 0;</span>
+<span class="fc bfc" id="L222" title="All 2 branches covered.">                    for (Segment segment : segments) {</span>
+
+<span class="fc bfc" id="L224" title="All 4 branches covered.">                        if (segment.getPoint1() == triangle.getPoint1() &amp;&amp; segment.getPoint2() == triangle.getPoint2()) {</span>
+<span class="fc" id="L225">                            triangle.setSegment1(posSegment);</span>
+<span class="fc" id="L226">                            segment.setTrigauche(posTriangle);</span>
+<span class="fc" id="L227">                            found1 = true;</span>
+                        }
+<span class="fc bfc" id="L229" title="All 4 branches covered.">                        if ((segment.getPoint2() == triangle.getPoint1() &amp;&amp; segment.getPoint1() == triangle.getPoint2())) {</span>
+<span class="fc" id="L230">                            triangle.setSegment1(posSegment);</span>
+<span class="fc" id="L231">                            segment.setTridroit(posTriangle);</span>
+<span class="fc" id="L232">                            found1 = true;</span>
+                        }
+<span class="fc" id="L234">                        posSegment++;</span>
+<span class="fc" id="L235">                    }</span>
+<span class="fc bfc" id="L236" title="All 2 branches covered.">                    if (!found1) {</span>
+
+<span class="fc" id="L238">                        triangle.setSegment1(segments.size());</span>
+<span class="fc" id="L239">                        segments.add(new Segment(triangle.getPoint1(), triangle.getPoint2(), 0, posTriangle));</span>
+                    }
+                }
+
+<span class="pc bpc" id="L243" title="1 of 2 branches missed.">                if (triangle.getSegment2() &lt;= 0) {</span>
+
+<span class="fc" id="L245">                    found2 = false;</span>
+<span class="fc" id="L246">                    posSegment = 0;</span>
+<span class="fc bfc" id="L247" title="All 2 branches covered.">                    for (Segment segment : segments) {</span>
+
+<span class="fc bfc" id="L249" title="All 4 branches covered.">                        if (segment.getPoint1() == triangle.getPoint2() &amp;&amp; segment.getPoint2() == triangle.getPoint3()) {</span>
+<span class="fc" id="L250">                            triangle.setSegment2(posSegment);</span>
+<span class="fc" id="L251">                            segment.setTrigauche(posTriangle);</span>
+<span class="fc" id="L252">                            found2 = true;</span>
+                        }
+<span class="fc bfc" id="L254" title="All 4 branches covered.">                        if ((segment.getPoint2() == triangle.getPoint2() &amp;&amp; segment.getPoint1() == triangle.getPoint3())) {</span>
+<span class="fc" id="L255">                            triangle.setSegment2(posSegment);</span>
+<span class="fc" id="L256">                            segment.setTridroit(posTriangle);</span>
+<span class="fc" id="L257">                            found2 = true;</span>
+                        }
+<span class="fc" id="L259">                        posSegment++;</span>
+<span class="fc" id="L260">                    }</span>
+<span class="fc bfc" id="L261" title="All 2 branches covered.">                    if (!found2) {</span>
+
+<span class="fc" id="L263">                        triangle.setSegment2(segments.size());</span>
+<span class="fc" id="L264">                        segments.add(new Segment(triangle.getPoint2(), triangle.getPoint3(), 0, posTriangle));</span>
+                    }
+                }
+
+<span class="pc bpc" id="L268" title="1 of 2 branches missed.">                if (triangle.getSegment3() &lt;= 0) {</span>
+
+<span class="fc" id="L270">                    found3 = false;</span>
+<span class="fc" id="L271">                    posSegment = 0;</span>
+<span class="fc bfc" id="L272" title="All 2 branches covered.">                    for (Segment segment : segments) {</span>
+
+<span class="fc bfc" id="L274" title="All 4 branches covered.">                        if (segment.getPoint1() == triangle.getPoint3() &amp;&amp; segment.getPoint2() == triangle.getPoint1()) {</span>
+<span class="fc" id="L275">                            triangle.setSegment3(posSegment);</span>
+<span class="fc" id="L276">                            segment.setTrigauche(posTriangle);</span>
+<span class="fc" id="L277">                            found3 = true;</span>
+                        }
+<span class="fc bfc" id="L279" title="All 4 branches covered.">                        if ((segment.getPoint2() == triangle.getPoint3() &amp;&amp; segment.getPoint1() == triangle.getPoint1())) {</span>
+<span class="fc" id="L280">                            triangle.setSegment3(posSegment);</span>
+<span class="fc" id="L281">                            segment.setTridroit(posTriangle);</span>
+<span class="fc" id="L282">                            found3 = true;</span>
+                        }
+<span class="fc" id="L284">                        posSegment++;</span>
+<span class="fc" id="L285">                    }</span>
+<span class="fc bfc" id="L286" title="All 2 branches covered.">                    if (!found3) {</span>
+
+<span class="fc" id="L288">                        triangle.setSegment3(segments.size());</span>
+<span class="fc" id="L289">                        segments.add(new Segment(triangle.getPoint3(), triangle.getPoint1(), 0, posTriangle));</span>
+                    }
+                }
+            }
+<span class="fc" id="L293">            posTriangle++;</span>
+<span class="fc" id="L294">        }</span>
+
+<span class="fc" id="L296">    }</span>
 
     @Override
     /**
      * surcharge de toString
      */
     public String toString() {
-<span class="nc" id="L94">        return (&quot;Triangle:&quot; + &quot;\n\tpoint1\t&quot; + point1.toString() + &quot;\n\tpoint2\t&quot; + point2.toString() + &quot;\n\tpoint3\t&quot; + point3.toString() + &quot;\n\tsegment1\t&quot; + &quot;\n\t\tpoint1\t&quot; + segment1.getPoint1().toString() + &quot;\n\t\tpoint2\t&quot; + segment1.getPoint2().toString() + &quot;\n\tsegment2\t&quot; + &quot;\n\t\tpoint1\t&quot; + segment2.getPoint1().toString() + &quot;\n\t\tpoint2\t&quot; + segment2.getPoint2().toString());</span>
+<span class="fc" id="L303">        return (&quot;\n\nTriangle:&quot; + &quot;\n\tpoint1\t&quot; + point1 + &quot;\n\tpoint2\t&quot; + point2 + &quot;\n\tpoint3\t&quot; + point3 + &quot;\n\tseg1\t&quot; + segment1 + &quot;\n\tseg2\t&quot; + segment2 + &quot;\n\tseg3\t&quot; + segment3);</span>
     }
 
     /**
@@ -103,129 +312,39 @@ public class Triangle {
      */
     public boolean equals(Triangle triangle) {
 
-<span class="pc bpc" id="L106" title="1 of 4 branches missed.">        if (this == null || triangle == null) {</span>
-<span class="fc" id="L107">            return false;</span>
+<span class="pc bpc" id="L315" title="1 of 2 branches missed.">        if (triangle == null) {</span>
+<span class="nc" id="L316">            return false;</span>
         } else {
 
-<span class="fc bfc" id="L110" title="All 2 branches covered.">            return ((this.getPoint1().equals(triangle.getPoint1())</span>
-<span class="fc bfc" id="L111" title="All 2 branches covered.">                    &amp;&amp; this.getPoint2().equals(triangle.getPoint2())</span>
-<span class="pc bpc" id="L112" title="1 of 2 branches missed.">                    &amp;&amp; this.getPoint3().equals(triangle.getPoint3()))</span>
-<span class="fc bfc" id="L113" title="All 2 branches covered.">                    || (this.getPoint1().equals(triangle.getPoint2())</span>
-<span class="pc bpc" id="L114" title="1 of 2 branches missed.">                    &amp;&amp; this.getPoint2().equals(triangle.getPoint3())</span>
-<span class="pc bnc" id="L115" title="All 2 branches missed.">                    &amp;&amp; this.getPoint3().equals(triangle.getPoint1()))</span>
-<span class="pc bpc" id="L116" title="1 of 2 branches missed.">                    || (this.getPoint1().equals(triangle.getPoint3())</span>
-<span class="nc bnc" id="L117" title="All 2 branches missed.">                    &amp;&amp; this.getPoint2().equals(triangle.getPoint1())</span>
-<span class="pc bnc" id="L118" title="All 2 branches missed.">                    &amp;&amp; this.getPoint3().equals(triangle.getPoint2())));</span>
+<span class="fc bfc" id="L319" title="All 2 branches covered.">            return ((this.getPoint1() == triangle.getPoint1()</span>
+<span class="pc bpc" id="L320" title="1 of 2 branches missed.">                    &amp;&amp; this.getPoint2() == triangle.getPoint2()</span>
+<span class="pc bpc" id="L321" title="1 of 2 branches missed.">                    &amp;&amp; this.getPoint3() == triangle.getPoint3())</span>
+<span class="pc bpc" id="L322" title="1 of 2 branches missed.">                    || (this.getPoint1() == (triangle.getPoint2())</span>
+<span class="nc bnc" id="L323" title="All 2 branches missed.">                    &amp;&amp; this.getPoint2() == (triangle.getPoint3())</span>
+<span class="pc bnc" id="L324" title="All 2 branches missed.">                    &amp;&amp; this.getPoint3() == (triangle.getPoint1()))</span>
+<span class="pc bpc" id="L325" title="1 of 2 branches missed.">                    || (this.getPoint1() == (triangle.getPoint3())</span>
+<span class="nc bnc" id="L326" title="All 2 branches missed.">                    &amp;&amp; this.getPoint2() == (triangle.getPoint1())</span>
+<span class="pc bnc" id="L327" title="All 2 branches missed.">                    &amp;&amp; this.getPoint3() == (triangle.getPoint2())));</span>
         }
     }
 
     /**
-     * Get the value of segment3
+     * Get the value of approximation angulaire
      *
-     * @return the value of segment3
+     * @return the value of approximation angulaire
      */
-    public Segment getSegment3() {
-<span class="fc" id="L128">        return segment3;</span>
+    public static double getApproximationAngulaire() {
+<span class="nc" id="L337">        return approximationAngulaire;</span>
     }
 
     /**
-     * Set the value of segment3
+     * Set the value of approximation angulaire
      *
-     * @param segment3 new value of segment3
+     * @param appro new value of approximation angulaire
      */
-    public void setSegment3(Segment segment3) {
-<span class="nc" id="L137">        this.segment3 = segment3;</span>
-<span class="nc" id="L138">    }</span>
-
-    /**
-     * Get the value of segment2
-     *
-     * @return the value of segment2
-     */
-    public Segment getSegment2() {
-<span class="fc" id="L146">        return segment2;</span>
-    }
-
-    /**
-     * Set the value of segment2
-     *
-     * @param segment2 new value of segment2
-     */
-    public void setSegment2(Segment segment2) {
-<span class="nc" id="L155">        this.segment2 = segment2;</span>
-<span class="nc" id="L156">    }</span>
-
-    /**
-     * Get the value of segment1
-     *
-     * @return the value of segment1
-     */
-    public Segment getSegment1() {
-<span class="fc" id="L164">        return segment1;</span>
-    }
-
-    /**
-     * Set the value of segment1
-     *
-     * @param segment1 new value of segment1
-     */
-    public void setSegment1(Segment segment1) {
-<span class="nc" id="L173">        this.segment1 = segment1;</span>
-<span class="nc" id="L174">    }</span>
-
-    /**
-     * Get the value of point1
-     *
-     * @return the value of point1
-     */
-    public Point3D getPoint1() {
-<span class="fc" id="L182">        return point1;</span>
-    }
-
-    /**
-     * Set the value of segment1
-     *
-     * @param point1 new value of point1
-     */
-    public void setPoint1(Point3D point1) {
-<span class="nc" id="L191">        this.point1 = point1;</span>
-<span class="nc" id="L192">    }</span>
-
-    /**
-     * Get the value of point2
-     *
-     * @return the value of point2
-     */
-    public Point3D getPoint2() {
-<span class="fc" id="L200">        return point2;</span>
-    }
-
-    /**
-     * Set the value of segment2
-     *
-     * @param point2 new value of point2
-     */
-    public void setPoint2(Point3D point2) {
-<span class="nc" id="L209">        this.point2 = point2;</span>
-<span class="nc" id="L210">    }</span>
-
-    /**
-     * Get the value of point3
-     *
-     * @return the value of point3
-     */
-    public Point3D getPoint3() {
-<span class="fc" id="L218">        return point3;</span>
-    }
-
-    /**
-     * Set the value of segment3
-     *
-     * @param point3 new value of point3
-     */
-    public void setPoint3(Point3D point3) {
-<span class="nc" id="L227">        this.point3 = point3;</span>
-<span class="nc" id="L228">    }</span>
+    public static void setApproximationAngulaire(double appro) {
+<span class="nc" id="L346">        approximationAngulaire = appro;</span>
+<span class="nc" id="L347">    }</span>
 
     /**
      * calcule le vecteur pente en 2D indiquant la direction de plus forte
@@ -233,24 +352,24 @@ public class Triangle {
      *
      * @return
      */
-    public Vecteur calculPente() {
-<span class="fc" id="L237">        Vecteur pente = new Vecteur(0, 0);</span>
-<span class="fc" id="L238">        double x1 = this.getPoint1().getPosx() - this.getPoint2().getPosx();</span>
-<span class="fc" id="L239">        double x2 = this.getPoint1().getPosx() - this.getPoint3().getPosx();</span>
-<span class="fc" id="L240">        double y1 = this.getPoint1().getPosy() - this.getPoint2().getPosy();</span>
-<span class="fc" id="L241">        double y2 = this.getPoint1().getPosy() - this.getPoint3().getPosy();</span>
-<span class="fc" id="L242">        double z1 = this.getPoint1().getPosz() - this.getPoint2().getPosz();</span>
-<span class="fc" id="L243">        double z2 = this.getPoint1().getPosz() - this.getPoint3().getPosz();</span>
+    public Vecteur calculPente(ArrayList&lt;Point3D&gt; points) {
+<span class="fc" id="L356">        Vecteur pente = new Vecteur(0, 0);</span>
+<span class="fc" id="L357">        double x1 = points.get(this.getPoint1()).getPosx() - points.get(this.getPoint2()).getPosx();</span>
+<span class="fc" id="L358">        double x2 = points.get(this.getPoint1()).getPosx() - points.get(this.getPoint3()).getPosx();</span>
+<span class="fc" id="L359">        double y1 = points.get(this.getPoint1()).getPosy() - points.get(this.getPoint2()).getPosy();</span>
+<span class="fc" id="L360">        double y2 = points.get(this.getPoint1()).getPosy() - points.get(this.getPoint3()).getPosy();</span>
+<span class="fc" id="L361">        double z1 = points.get(this.getPoint1()).getPosz() - points.get(this.getPoint2()).getPosz();</span>
+<span class="fc" id="L362">        double z2 = points.get(this.getPoint1()).getPosz() - points.get(this.getPoint3()).getPosz();</span>
 
-<span class="pc bpc" id="L245" title="1 of 2 branches missed.">        if (x1 * y2 - y1 * x2 &gt;= 0) {</span>
-<span class="fc" id="L246">            pente.setValx((y1 * z2 - z1 * y2));</span>
-<span class="fc" id="L247">            pente.setValy((z1 * x2 - x1 * z2));</span>
+<span class="pc bpc" id="L364" title="1 of 2 branches missed.">        if (x1 * y2 - y1 * x2 &gt;= 0) {</span>
+<span class="fc" id="L365">            pente.setValx((y1 * z2 - z1 * y2));</span>
+<span class="fc" id="L366">            pente.setValy((z1 * x2 - x1 * z2));</span>
         } else {
-<span class="nc" id="L249">            pente.setValx(-(y1 * z2 - z1 * y2));</span>
-<span class="nc" id="L250">            pente.setValy(-(z1 * x2 - x1 * z2));</span>
+<span class="nc" id="L368">            pente.setValx(-(y1 * z2 - z1 * y2));</span>
+<span class="nc" id="L369">            pente.setValy(-(z1 * x2 - x1 * z2));</span>
         }
 
-<span class="fc" id="L253">        return pente;</span>
+<span class="fc" id="L372">        return pente;</span>
     }
 
     /**
@@ -259,164 +378,207 @@ public class Triangle {
      * y sont rattaché
      *
      * @param segment
+     * @param triangles
+     * @param segments
+     * @param points
      * @param bassinVersant
      */
-    public void calculProjete(Segment segment, ArrayList&lt;Triangle&gt; bassinVersant) {
-        // System.out.println(this);
-        // System.out.println(segment.getPoint1());
-        // System.out.println(segment.getPoint2());
-<span class="pc bpc" id="L268" title="1 of 6 branches missed.">        if (((!segment.gettraiteDroit() &amp;&amp; (this.equals(segment.getTridroit()))) || ((!segment.getTraiteGauche()</span>
-<span class="pc bpc" id="L269" title="1 of 2 branches missed.">                &amp;&amp; (this.equals(segment.getTrigauche())))))) {</span>
+    public void calculProjete(int segment, ArrayList&lt;Triangle&gt; triangles, ArrayList&lt;Segment&gt; segments, ArrayList&lt;Point3D&gt; points, ArrayList&lt;Triangle&gt; bassinVersant) {
+        
+        
+<span class="fc" id="L389">        System.out.println((((segments.get(segment)).getTridroit())));</span>
+<span class="fc" id="L390">        System.out.println((((segments.get(segment)).getTrigauche())));</span>
+<span class="fc" id="L391">        System.out.println(this);</span>
+<span class="pc bpc" id="L392" title="3 of 6 branches missed.">        if ((!segments.get(segment).gettraiteDroit() &amp;&amp; this.equals(triangles.get(segments.get(segment).getTridroit()))) || (!segments.get(segment).getTraiteGauche()</span>
+<span class="pc bpc" id="L393" title="1 of 2 branches missed.">                &amp;&amp; this.equals(triangles.get(segments.get(segment).getTrigauche())))) {</span>
 
-<span class="fc bfc" id="L271" title="All 2 branches covered.">            if (this.equals(segment.getTridroit())) {</span>
-<span class="fc" id="L272">                segment.setTraiteDroit(true);</span>
+<span class="pc bpc" id="L395" title="1 of 2 branches missed.">            if (this.equals(triangles.get(segments.get(segment).getTridroit()))) {</span>
+<span class="nc" id="L396">                segments.get(segment).setTraiteDroit(true);</span>
             } else {
-<span class="fc" id="L274">                segment.setTraiteGauche(true);</span>
+<span class="fc" id="L398">                segments.get(segment).setTraiteGauche(true);</span>
             }
 
-<span class="fc" id="L277">            Point3D pointA = new Point3D();</span>
-<span class="fc" id="L278">            Point3D pointB = new Point3D();</span>
-<span class="fc" id="L279">            Point3D pointC = new Point3D();</span>
-<span class="fc" id="L280">            Segment segmentAB = new Segment();</span>
-<span class="fc" id="L281">            Segment segmentBC = new Segment();</span>
-<span class="fc" id="L282">            Segment segmentAC = new Segment();</span>
+<span class="fc" id="L401">            int pointA = 0, pointB = 0, pointC = 0;</span>
+<span class="fc" id="L402">            int segmentAB = 0, segmentBC = 0, segmentAC = 0;</span>
 
-<span class="fc" id="L284">            Vecteur pente = new Vecteur();</span>
+<span class="fc" id="L404">            Vecteur pente = this.calculPente(points);</span>
 
-<span class="fc" id="L286">            pente = this.calculPente();</span>
+<span class="pc bpc" id="L406" title="1 of 2 branches missed.">            if (segments.get(segment).getPoint1() == this.getPoint1()) {</span>
 
-<span class="fc bfc" id="L288" title="All 2 branches covered.">            if (segment.getPoint1().equals(this.getPoint1())) {</span>
+<span class="nc bnc" id="L408" title="All 2 branches missed.">                if (segments.get(segment).getPoint2() == this.getPoint2()) {</span>
 
-<span class="pc bpc" id="L290" title="1 of 2 branches missed.">                if (segment.getPoint2().equals(this.getPoint2())) {</span>
-
-<span class="nc" id="L292">                    pointA = this.getPoint3();</span>
-<span class="nc" id="L293">                    pointB = this.getPoint1();</span>
-<span class="nc" id="L294">                    pointC = this.getPoint2();</span>
-<span class="nc" id="L295">                    segmentAB = this.getSegment3();</span>
-<span class="nc" id="L296">                    segmentBC = this.getSegment1();</span>
-<span class="nc" id="L297">                    segmentAC = this.getSegment2();</span>
+<span class="nc" id="L410">                    pointA = this.getPoint3();</span>
+<span class="nc" id="L411">                    pointB = this.getPoint1();</span>
+<span class="nc" id="L412">                    pointC = this.getPoint2();</span>
+<span class="nc" id="L413">                    segmentAB = this.getSegment3();</span>
+<span class="nc" id="L414">                    segmentBC = this.getSegment1();</span>
+<span class="nc" id="L415">                    segmentAC = this.getSegment2();</span>
                 } else {
-<span class="fc" id="L299">                    pointA = this.getPoint2();</span>
-<span class="fc" id="L300">                    pointB = this.getPoint3();</span>
-<span class="fc" id="L301">                    pointC = this.getPoint1();</span>
-<span class="fc" id="L302">                    segmentAB = this.getSegment2();</span>
-<span class="fc" id="L303">                    segmentBC = this.getSegment3();</span>
-<span class="fc" id="L304">                    segmentAC = this.getSegment1();</span>
+<span class="nc" id="L417">                    pointA = this.getPoint2();</span>
+<span class="nc" id="L418">                    pointB = this.getPoint3();</span>
+<span class="nc" id="L419">                    pointC = this.getPoint1();</span>
+<span class="nc" id="L420">                    segmentAB = this.getSegment2();</span>
+<span class="nc" id="L421">                    segmentBC = this.getSegment3();</span>
+<span class="nc" id="L422">                    segmentAC = this.getSegment1();</span>
                 }
             }
 
-<span class="fc bfc" id="L308" title="All 2 branches covered.">            if (segment.getPoint1().equals(this.getPoint2())) {</span>
+<span class="fc bfc" id="L426" title="All 2 branches covered.">            if (segments.get(segment).getPoint1() == this.getPoint2()) {</span>
 
-<span class="pc bpc" id="L310" title="1 of 2 branches missed.">                if (segment.getPoint2().equals(this.getPoint3())) {</span>
+<span class="pc bpc" id="L428" title="1 of 2 branches missed.">                if (segments.get(segment).getPoint2() == this.getPoint3()) {</span>
 
-<span class="fc" id="L312">                    pointA = this.getPoint1();</span>
-<span class="fc" id="L313">                    pointB = this.getPoint2();</span>
-<span class="fc" id="L314">                    pointC = this.getPoint3();</span>
-<span class="fc" id="L315">                    segmentAB = this.getSegment1();</span>
-<span class="fc" id="L316">                    segmentBC = this.getSegment2();</span>
-<span class="fc" id="L317">                    segmentAC = this.getSegment3();</span>
+<span class="fc" id="L430">                    pointA = this.getPoint1();</span>
+<span class="fc" id="L431">                    pointB = this.getPoint2();</span>
+<span class="fc" id="L432">                    pointC = this.getPoint3();</span>
+<span class="fc" id="L433">                    segmentAB = this.getSegment1();</span>
+<span class="fc" id="L434">                    segmentBC = this.getSegment2();</span>
+<span class="fc" id="L435">                    segmentAC = this.getSegment3();</span>
                 } else {
-<span class="nc" id="L319">                    pointA = this.getPoint3();</span>
-<span class="nc" id="L320">                    pointB = this.getPoint1();</span>
-<span class="nc" id="L321">                    pointC = this.getPoint2();</span>
-<span class="nc" id="L322">                    segmentAB = this.getSegment3();</span>
-<span class="nc" id="L323">                    segmentBC = this.getSegment1();</span>
-<span class="nc" id="L324">                    segmentAC = this.getSegment2();</span>
+<span class="nc" id="L437">                    pointA = this.getPoint3();</span>
+<span class="nc" id="L438">                    pointB = this.getPoint1();</span>
+<span class="nc" id="L439">                    pointC = this.getPoint2();</span>
+<span class="nc" id="L440">                    segmentAB = this.getSegment3();</span>
+<span class="nc" id="L441">                    segmentBC = this.getSegment1();</span>
+<span class="nc" id="L442">                    segmentAC = this.getSegment2();</span>
                 }
             }
 
-<span class="fc bfc" id="L328" title="All 2 branches covered.">            if (segment.getPoint1().equals(this.getPoint3())) {</span>
+<span class="fc bfc" id="L446" title="All 2 branches covered.">            if (segments.get(segment).getPoint1() == this.getPoint3()) {</span>
 
-<span class="fc bfc" id="L330" title="All 2 branches covered.">                if (segment.getPoint2().equals(this.getPoint1())) {</span>
+<span class="pc bpc" id="L448" title="1 of 2 branches missed.">                if (segments.get(segment).getPoint2() == this.getPoint1()) {</span>
 
-<span class="fc" id="L332">                    pointA = this.getPoint2();</span>
-<span class="fc" id="L333">                    pointB = this.getPoint3();</span>
-<span class="fc" id="L334">                    pointC = this.getPoint1();</span>
-<span class="fc" id="L335">                    segmentAB = this.getSegment2();</span>
-<span class="fc" id="L336">                    segmentBC = this.getSegment3();</span>
-<span class="fc" id="L337">                    segmentAC = this.getSegment1();</span>
+<span class="nc" id="L450">                    pointA = this.getPoint2();</span>
+<span class="nc" id="L451">                    pointB = this.getPoint3();</span>
+<span class="nc" id="L452">                    pointC = this.getPoint1();</span>
+<span class="nc" id="L453">                    segmentAB = this.getSegment2();</span>
+<span class="nc" id="L454">                    segmentBC = this.getSegment3();</span>
+<span class="nc" id="L455">                    segmentAC = this.getSegment1();</span>
                 } else {
-<span class="fc" id="L339">                    pointA = this.getPoint1();</span>
-<span class="fc" id="L340">                    pointB = this.getPoint2();</span>
-<span class="fc" id="L341">                    pointC = this.getPoint3();</span>
-<span class="fc" id="L342">                    segmentAB = this.getSegment1();</span>
-<span class="fc" id="L343">                    segmentBC = this.getSegment2();</span>
-<span class="fc" id="L344">                    segmentAC = this.getSegment3();</span>
+<span class="fc" id="L457">                    pointA = this.getPoint1();</span>
+<span class="fc" id="L458">                    pointB = this.getPoint2();</span>
+<span class="fc" id="L459">                    pointC = this.getPoint3();</span>
+<span class="fc" id="L460">                    segmentAB = this.getSegment1();</span>
+<span class="fc" id="L461">                    segmentBC = this.getSegment2();</span>
+<span class="fc" id="L462">                    segmentAC = this.getSegment3();</span>
                 }
             }
 
-<span class="fc" id="L348">            double angleBC = (new Vecteur(pointB, pointC).calculAngle());</span>
-<span class="fc" id="L349">            double angleCB = (new Vecteur(pointC, pointB).calculAngle());</span>
+<span class="fc" id="L466">            double angleBC = (new Vecteur(points.get(pointB), points.get(pointC)).calculAngle());</span>
+<span class="fc" id="L467">            double angleCB = (new Vecteur(points.get(pointC), points.get(pointB)).calculAngle());</span>
 
-<span class="fc" id="L351">            double angleAB = (new Vecteur(pointA, pointB).calculAngle());</span>
-<span class="fc" id="L352">            double angleAC = (new Vecteur(pointA, pointC).calculAngle());</span>
+<span class="fc" id="L469">            double angleAB = (new Vecteur(points.get(pointA), points.get(pointB)).calculAngle());</span>
+<span class="fc" id="L470">            double angleAC = (new Vecteur(points.get(pointA), points.get(pointC)).calculAngle());</span>
 
-<span class="fc" id="L354">            double anglePente = this.calculPente().calculAngle();</span>
+<span class="fc" id="L472">            Vecteur pente1 = this.calculPente(points);</span>
 
-<span class="pc bpc" id="L356" title="1 of 4 branches missed.">            if (((Vecteur.distAngle(angleBC, anglePente) - Vecteur.distAngle(angleBC, angleCB)) &lt; approximationAngulaire) || (Math.abs(angleBC - anglePente) &lt; approximationAngulaire)) {</span>
-                //1er cas: pas de propagation:
-                //rien pour le moment, il n'y a pas de propagation donc pas d'appel récursif
-             // System.out.println(this);
-               //  System.out.println(segment.getPoint1());
-                // System.out.println(segment.getPoint2());
+<span class="pc bpc" id="L474" title="3 of 4 branches missed.">            if ((pente1.getValx() == 0) &amp;&amp; (pente1.getValy() == 0)) {</span>
+                // projection sur le triangle entier dans le cas d'une surface horizontale
+<span class="nc" id="L476">                bassinVersant.add(this);</span>
+
+<span class="nc bnc" id="L478" title="All 2 branches missed.">                if (segments.get(segmentAB).getTridroit() &gt; 0) {</span>
+<span class="nc bnc" id="L479" title="All 2 branches missed.">                    if (triangles.get(segments.get(segmentAB).getTridroit()).equals(this)) {</span>
+<span class="nc bnc" id="L480" title="All 2 branches missed.">                        if (segments.get(segmentAB).getTrigauche() &gt; 0) {</span>
+<span class="nc" id="L481">                            triangles.get(segments.get(segmentAB).getTrigauche()).calculProjete(segmentAB, triangles, segments, points, bassinVersant);</span>
+
+                        }
+                    } else {
+<span class="nc" id="L485">                        triangles.get(segments.get(segmentAB).getTridroit()).calculProjete(segmentAB, triangles, segments, points, bassinVersant);</span>
+                    }
+                }
+
+<span class="nc bnc" id="L489" title="All 2 branches missed.">                if (segments.get(segmentAC).getTridroit() &gt; 0) {</span>
+<span class="nc bnc" id="L490" title="All 2 branches missed.">                    if (triangles.get(segments.get(segmentAC).getTridroit()).equals(this)) {</span>
+<span class="nc bnc" id="L491" title="All 2 branches missed.">                        if (segments.get(segmentAC).getTrigauche() &gt; 0) {</span>
+
+<span class="nc" id="L493">                            triangles.get(segments.get(segmentAC).getTrigauche()).calculProjete(segmentAC, triangles, segments, points, bassinVersant);</span>
+
+                        }
+                    } else {
+<span class="nc" id="L497">                        triangles.get(segments.get(segmentAC).getTridroit()).calculProjete(segmentAC, triangles, segments, points, bassinVersant);</span>
+                    }
+                }
             } else {
-                //2eme cas : propagation totale du triangle
-<span class="pc bpc" id="L364" title="1 of 4 branches missed.">                if (((Vecteur.distAngle(angleAB, anglePente) - Vecteur.distAngle(angleAB, angleAC)) &lt; approximationAngulaire) || (Math.abs(angleAB - anglePente) &lt; approximationAngulaire)) {</span>
-                    // projection sur le triangle entier
 
-<span class="fc" id="L367">                    bassinVersant.add(this);</span>
-                 //   System.out.println(this);
-                //    System.out.println(segment.getPoint1());
-                    //System.out.println(segment.getPoint2());
-                    
-<span class="pc bpc" id="L372" title="1 of 2 branches missed.">                    if (segmentAB.getTridroit() != null) {                     </span>
-<span class="pc bpc" id="L373" title="1 of 2 branches missed.">                        if (segmentAB.getTridroit().equals(this)) {</span>
-<span class="nc bnc" id="L374" title="All 2 branches missed.">                            if (segmentAB.getTrigauche() != null) {</span>
-<span class="nc" id="L375">                                segmentAB.getTrigauche().calculProjete(segmentAB, bassinVersant);</span>
-                                
+               
+<span class="fc" id="L503">                double anglePente = pente1.calculAngle();</span>
+                
+<span class="pc bpc" id="L505" title="1 of 4 branches missed.">                if (((Vecteur.distAngle(angleBC, anglePente) - Vecteur.distAngle(angleBC, angleCB)) &lt; approximationAngulaire) || (Math.abs(angleBC - anglePente) &lt; approximationAngulaire)) {</span>
+                    //1er cas: pas de propagation:
+                    //rien pour le moment, il n'y a pas de propagation donc pas d'appel récursif
+
+                } else {
+                    //2eme cas : propagation totale du triangle
+<span class="pc bpc" id="L511" title="2 of 4 branches missed.">                    if (((Vecteur.distAngle(angleAB, anglePente) - Vecteur.distAngle(angleAB, angleAC)) &lt; approximationAngulaire) || (Math.abs(angleAB - anglePente) &lt; approximationAngulaire)) {</span>
+
+                        // projection sur le triangle entier
+<span class="nc" id="L514">                        bassinVersant.add(this);</span>
+
+<span class="nc bnc" id="L516" title="All 2 branches missed.">                        if (segments.get(segmentAB).getTridroit() &gt; 0) {</span>
+<span class="nc bnc" id="L517" title="All 2 branches missed.">                            if (triangles.get(segments.get(segmentAB).getTridroit()).equals(this)) {</span>
+<span class="nc bnc" id="L518" title="All 2 branches missed.">                                if (segments.get(segmentAB).getTrigauche() &gt; 0) {</span>
+<span class="nc" id="L519">                                    triangles.get(segments.get(segmentAB).getTrigauche()).calculProjete(segmentAB, triangles, segments, points, bassinVersant);</span>
+
+                                }
+                            } else {
+<span class="nc" id="L523">                                triangles.get(segments.get(segmentAB).getTridroit()).calculProjete(segmentAB, triangles, segments, points, bassinVersant);</span>
                             }
-                        } else {
-<span class="fc" id="L379">                            segmentAB.getTridroit().calculProjete(segmentAB, bassinVersant);</span>
                         }
-                    }
 
-<span class="pc bpc" id="L383" title="1 of 2 branches missed.">                    if (segmentAC.getTridroit() != null) {</span>
-<span class="pc bpc" id="L384" title="1 of 2 branches missed.">                        if (segmentAC.getTridroit().equals(this)) {</span>
-<span class="pc bpc" id="L385" title="1 of 2 branches missed.">                            if (segmentAC.getTrigauche() != null) {</span>
-                                //System.out.println(segmentAC.getTrigauche());
-<span class="fc" id="L387">                                segmentAC.getTrigauche().calculProjete(segmentAC, bassinVersant);</span>
-                                
+<span class="nc bnc" id="L527" title="All 2 branches missed.">                        if (segments.get(segmentAC).getTridroit() &gt; 0) {</span>
+<span class="nc bnc" id="L528" title="All 2 branches missed.">                            if (triangles.get(segments.get(segmentAC).getTridroit()).equals(this)) {</span>
+<span class="nc bnc" id="L529" title="All 2 branches missed.">                                if (segments.get(segmentAC).getTrigauche() &gt; 0) {</span>
+<span class="nc" id="L530">                                    triangles.get(segments.get(segmentAC).getTrigauche()).calculProjete(segmentAC, triangles, segments, points, bassinVersant);</span>
+
+                                }
+                            } else {
+<span class="nc" id="L534">                                triangles.get(segments.get(segmentAC).getTridroit()).calculProjete(segmentAC, triangles, segments, points, bassinVersant);</span>
                             }
-                        } else {
-<span class="nc" id="L391">                            segmentAC.getTridroit().calculProjete(segmentAC, bassinVersant);</span>
                         }
-                    }
 
-                } else { // Les 2 cas précédents ont priorité sur les 2 qui suivent pour les cas qui sont en commun
+                    } else { // Les 2 cas précédents ont priorité sur les 2 qui suivent pour les cas qui sont en commun
 
-<span class="fc" id="L397">                    Point3D separation = new Point3D(0, 0, 0);</span>
+<span class="fc" id="L540">                        Point3D separation = new Point3D(0, 0, 0);</span>
 
-                    //3eme cas : propagation partielle sur le triangle, comprenant une partie du segment AC
-<span class="pc bpc" id="L400" title="1 of 2 branches missed.">                    if (Vecteur.distAngle(angleCB, anglePente) &lt;= Vecteur.distAngle(angleCB, angleAB)) {</span>
+                        //3eme cas : propagation partielle sur le triangle, comprenant une partie du segment AC
+<span class="fc bfc" id="L543" title="All 2 branches covered.">                        if (Vecteur.distAngle(angleCB, anglePente) &lt;= Vecteur.distAngle(angleCB, angleAB)) {</span>
 
-                        //projection de B sur le segmentAC suivant la pente 
-<span class="fc" id="L403">                        separation = Point3D.intersection(segmentAC, pointB, pente);</span>
-<span class="fc" id="L404">                        segmentAC.decoupe(separation, this, pointC, bassinVersant);</span>
+                            //projection de B sur le segmentAC suivant la pente 
+<span class="fc" id="L546">                            separation = Point3D.intersection(segments.get(segmentAC), points.get(pointB), pente, points);</span>
+<span class="fc" id="L547">                            int separateur = points.size();</span>
+<span class="fc" id="L548">                            points.add(separation);</span>
+<span class="fc" id="L549">                            segments.get(segmentAC).decoupe(separateur, triangles.indexOf(this), pointB, bassinVersant, points, segments, triangles);</span>
 
-                    }
+                        }
 
-                    //4ème cas : propagation partielle sur le triangle, comprenant une partie du segment AB
-<span class="pc bpc" id="L409" title="1 of 2 branches missed.">                    if (Vecteur.distAngle(angleAC, anglePente) &lt;= Vecteur.distAngle(angleAC, angleBC)) {</span>
+                        //4ème cas : propagation partielle sur le triangle, comprenant une partie du segment AB
+<span class="pc bpc" id="L554" title="1 of 2 branches missed.">                        if (Vecteur.distAngle(angleAC, anglePente) &lt;= Vecteur.distAngle(angleAC, angleBC)) {</span>
 
-                        // projection de C sur le segmentAB suivant la pente
-<span class="nc" id="L412">                        separation = Point3D.intersection(segmentAB, pointC, pente);</span>
-<span class="nc" id="L413">                        segmentAB.decoupe(separation, this, pointB, bassinVersant);</span>
+                            // projection de C sur le segmentAB suivant la pente
+<span class="nc" id="L557">                            separation = Point3D.intersection(segments.get(segmentAB), points.get(pointC), pente, points);</span>
+<span class="nc" id="L558">                            int separateur = points.size();</span>
+<span class="nc" id="L559">                            points.add(separation);</span>
+<span class="nc" id="L560">                            segments.get(segmentAB).decoupe(separateur, triangles.indexOf(this), pointB, bassinVersant, points, segments, triangles);</span>
 
+                        }
                     }
                 }
             }
         }
-<span class="fc" id="L419">    }</span>
+<span class="fc" id="L567">    }</span>
+
+    public void seekSegment(ArrayList&lt;Segment&gt; segments, ArrayList&lt;Point3D&gt; points) {
+
+<span class="nc" id="L571">        boolean found1 = false, found2 = false, found3 = false;</span>
+<span class="nc" id="L572">        int position = 1;</span>
+<span class="nc bnc" id="L573" title="All 2 branches missed.">        for (Segment segment : segments) {</span>
+
+<span class="nc bnc" id="L575" title="All 4 branches missed.">            if ((segment.getPoint1() == this.getPoint1() &amp;&amp; segment.getPoint2() == this.getPoint2())</span>
+<span class="nc bnc" id="L576" title="All 4 branches missed.">                    || (segment.getPoint2() == this.getPoint1() &amp;&amp; segment.getPoint1() == this.getPoint2())) {</span>
+
+            }
+
+<span class="nc" id="L580">        }</span>
+<span class="nc" id="L581">    }</span>
 
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.2.201409121644</span></div></body></html>
