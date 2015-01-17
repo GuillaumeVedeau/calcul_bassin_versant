@@ -12,11 +12,13 @@ import java.util.ArrayList;
 /**
  * Calcul le bassin versant d'un point
  *
- * @author Utilisateur
+ * @author Guillaume Vedeau
+ * @author Antoine Rigoureau
  */
 public class Calcul_bassin_versant {
 
     /**
+     * 
      * @param args the command line arguments
      */
     public static void main(String[] args) {
@@ -93,13 +95,20 @@ public class Calcul_bassin_versant {
         System.out.println(triangle);
         }
        
-        /*
+        
        
         LectureWrl test = new LectureWrl("C:/Users/Utilisateur/Documents/NetBeansProjects/calcul_bassin_versant/calcul_bassin_versant/Chezine.wrl");
-        System.out.println(test.getListeTriangle().get(0));
-        Triangle.construction(test.getListeTriangle(),new ArrayList<>());
-        System.out.println(test.getListeTriangle().get(0).getSegment1().getPoint1());
-        System.out.println(test.getListePoint().get(502).calculBassin(test.getListeTriangle()).size());*/
+        ArrayList<Segment> segments2 = new ArrayList<>();
+        Triangle.construction(test.getListeTriangle(),segments2);
+        
+        System.out.println(segments2.size());
+        
+        ArrayList<Triangle> resultat2 = new ArrayList<>();
+        
+        test.getListeTriangle().get(segments2.get(75).getTridroit())
+                .calculProjete(75, test.getListeTriangle(),
+                        segments2, test.getListePoint(), resultat2);
+        System.out.println(resultat2.size());
     }
 
 }

@@ -15,7 +15,8 @@ import java.util.StringTokenizer;
 
 /**
  *
- * @author Antoine
+ * @author Guillaume Vedeau
+ * @author Antoine Vedeau
  */
 public class LectureWrl {
    
@@ -26,7 +27,9 @@ public class LectureWrl {
     public LectureWrl(String source){
         this.source=source;
         listePoint=new ArrayList();
+        listePoint.add(new Point3D(0,0,0));
         listeTriangle=new ArrayList();
+        listeTriangle.add(new Triangle());
         lecture();
    }
 
@@ -72,7 +75,7 @@ public class LectureWrl {
         
         while(!("".equals(fichier.readLine()))){
             ligne=fichier.readLine();
-           // lectureTriangles(ligne);
+           lectureTriangles(ligne);
         }
         
         
@@ -118,7 +121,7 @@ public class LectureWrl {
      * @param ligne 
      */
     
-    /**
+    
     private void lectureTriangles(String ligne) {
         
         String delimiteurs = " ,;  \t";
@@ -139,22 +142,22 @@ public class LectureWrl {
             Triangle t = new Triangle();
             if(Vecteur.distAngle((new Vecteur(pointa, pointb)).calculAngle(),(new Vecteur(pointa, pointc)).calculAngle())<Math.PI){
             
-            t.setPoint1(pointa);
-            t.setPoint2(pointb);
-            t.setPoint3(pointc);
+            t.setPoint1(a);
+            t.setPoint2(b);
+            t.setPoint3(c);
             
             }else{
                 
-            t.setPoint1(pointa);
-            t.setPoint2(pointc);
-            t.setPoint3(pointb);
+            t.setPoint1(a);
+            t.setPoint2(c);
+            t.setPoint3(b);
             
             
             } 
-            t.setSegment1(null);
-            t.setSegment2(null);
-            t.setSegment3(null); 
+            t.setSegment1(0);
+            t.setSegment2(0);
+            t.setSegment3(0); 
             listeTriangle.add(t); 
     }
-      */ 
+      
 }

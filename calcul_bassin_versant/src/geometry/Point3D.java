@@ -6,17 +6,35 @@
 package geometry;
 
 import java.util.ArrayList;
+import org.watershed.error.WatershedError;
 
 /**
- * gere les objet de type Poin3D
+ * the smallest element of a WTriangle
  *
- * @author Utilisateur
+ * @author Antoine Rigoureau
+ * @author Guillaume Vedeau
  */
 public class Point3D {
 
     private double posx;
     private double posy;
     private double posz;
+
+    /**
+     *Initialize point
+     * @param x
+     * @param y
+     * @param z
+     * @throws DelaunayError If x, y or z is not set. 63
+     */
+     private void init(double x, double y, double z) throws WatershedError {
+         		if (Double.isNaN(x) || Double.isNaN(y) || Double.isNaN(z)) {
+            			throw new WatershedError(WatershedError.WatershedError_ERROR_ERROR_POINT_XYZ);
+             		}
+         		this.posx = x;
+                         this.posy = y;
+                         this.posz = z;
+         	}
 
     /**
      * classic constructor
@@ -124,7 +142,7 @@ public class Point3D {
         double a1, b1, c1;
         double a2, b2, c2;
         Point3D intersect = new Point3D(0, 0, 0);
-        int pointSeg1 = segment.getPoint1(); 
+        int pointSeg1 = segment.getPoint1();
         int pointSeg2 = segment.getPoint2();
 
         a1 = vecteur.getValx();
@@ -153,82 +171,82 @@ public class Point3D {
         return intersect;
 
     }
-/*
-    public ArrayList<Triangle> calculBassin(ArrayList<Triangle> triangles, ArrayList<Segment> segment, ArrayList<Point3D> points) {
+    /*
+     public ArrayList<Triangle> calculBassin(ArrayList<Triangle> triangles, ArrayList<Segment> segment, ArrayList<Point3D> points) {
 
-        ArrayList<Triangle> bassinVersant = new ArrayList<>();
+     ArrayList<Triangle> bassinVersant = new ArrayList<>();
 
-        for (Triangle triangle : triangles) {
-            if (points.get(triangle.getPoint1()).equals(this)) {
-                if (triangle.getPoint2().getPosz() >= this.getPosz()) {
+     for (Triangle triangle : triangles) {
+     if (points.get(triangle.getPoint1()).equals(this)) {
+     if (triangle.getPoint2().getPosz() >= this.getPosz()) {
 
-                    if (triangle.getSegment1().getTridroit() != null) {
-                        triangle.getSegment1().getTridroit().calculProjete(triangle.getSegment1(), bassinVersant);
-                    }
-                    if (triangle.getSegment1().getTrigauche() != null) {
-                        triangle.getSegment1().getTrigauche().calculProjete(triangle.getSegment1(), bassinVersant);
-                    }
-                }
+     if (triangle.getSegment1().getTridroit() != null) {
+     triangle.getSegment1().getTridroit().calculProjete(triangle.getSegment1(), bassinVersant);
+     }
+     if (triangle.getSegment1().getTrigauche() != null) {
+     triangle.getSegment1().getTrigauche().calculProjete(triangle.getSegment1(), bassinVersant);
+     }
+     }
 
-                if (triangle.getPoint3().getPosz() >= this.getPosz()) {
-                    if (triangle.getSegment3().getTridroit() != null) {
-                        triangle.getSegment3().getTridroit().calculProjete(triangle.getSegment3(), bassinVersant);
-                    }
-                    if (triangle.getSegment3().getTrigauche() != null) {
-                        triangle.getSegment3().getTrigauche().calculProjete(triangle.getSegment3(), bassinVersant);
-                    }
+     if (triangle.getPoint3().getPosz() >= this.getPosz()) {
+     if (triangle.getSegment3().getTridroit() != null) {
+     triangle.getSegment3().getTridroit().calculProjete(triangle.getSegment3(), bassinVersant);
+     }
+     if (triangle.getSegment3().getTrigauche() != null) {
+     triangle.getSegment3().getTrigauche().calculProjete(triangle.getSegment3(), bassinVersant);
+     }
 
-                }
-            }
+     }
+     }
 
-            if (points.get(triangle.getPoint2()).equals(this)) {
-                if (triangle.getPoint1().getPosz() >= this.getPosz()) {
+     if (points.get(triangle.getPoint2()).equals(this)) {
+     if (triangle.getPoint1().getPosz() >= this.getPosz()) {
 
-                    if (triangle.getSegment1().getTridroit() != null) {
-                        triangle.getSegment1().getTridroit().calculProjete(triangle.getSegment1(), bassinVersant);
-                    }
-                    if (triangle.getSegment1().getTrigauche() != null) {
-                        triangle.getSegment1().getTrigauche().calculProjete(triangle.getSegment1(), bassinVersant);
-                    }
-                }
+     if (triangle.getSegment1().getTridroit() != null) {
+     triangle.getSegment1().getTridroit().calculProjete(triangle.getSegment1(), bassinVersant);
+     }
+     if (triangle.getSegment1().getTrigauche() != null) {
+     triangle.getSegment1().getTrigauche().calculProjete(triangle.getSegment1(), bassinVersant);
+     }
+     }
 
-                if (points.get(triangle.getPoint3()).getPosz() >= this.getPosz()) {
-                    if (triangle.getSegment2().getTridroit() != null) {
-                        triangle.getSegment2().getTridroit().calculProjete(triangle.getSegment2(), bassinVersant);
-                    }
-                    if (triangle.getSegment2().getTrigauche() != null) {
-                        triangle.getSegment2().getTrigauche().calculProjete(triangle.getSegment2(), bassinVersant);
-                    }
+     if (points.get(triangle.getPoint3()).getPosz() >= this.getPosz()) {
+     if (triangle.getSegment2().getTridroit() != null) {
+     triangle.getSegment2().getTridroit().calculProjete(triangle.getSegment2(), bassinVersant);
+     }
+     if (triangle.getSegment2().getTrigauche() != null) {
+     triangle.getSegment2().getTrigauche().calculProjete(triangle.getSegment2(), bassinVersant);
+     }
 
-                }
-            }
+     }
+     }
 
-            if (points.get(triangle.getPoint3()).equals(this)) {
-                if (triangle.getPoint3().equals(this)) {
-                    if (triangle.getPoint2().getPosz() >= this.getPosz()) {
+     if (points.get(triangle.getPoint3()).equals(this)) {
+     if (triangle.getPoint3().equals(this)) {
+     if (triangle.getPoint2().getPosz() >= this.getPosz()) {
 
-                        if (triangle.getSegment2().getTridroit() != null) {
-                            triangle.getSegment2().getTridroit().calculProjete(triangle.getSegment2(), bassinVersant);
-                        }
-                        if (triangle.getSegment2().getTrigauche() != null) {
-                            triangle.getSegment2().getTrigauche().calculProjete(triangle.getSegment2(), bassinVersant);
-                        }
-                    }
+     if (triangle.getSegment2().getTridroit() != null) {
+     triangle.getSegment2().getTridroit().calculProjete(triangle.getSegment2(), bassinVersant);
+     }
+     if (triangle.getSegment2().getTrigauche() != null) {
+     triangle.getSegment2().getTrigauche().calculProjete(triangle.getSegment2(), bassinVersant);
+     }
+     }
 
-                    if (points.get(triangle.getPoint1()).getPosz() >= this.getPosz()) {
-                        if (triangle.getSegment3().getTridroit() != null) {
-                            triangle.getSegment3().getTridroit().calculProjete(triangle.getSegment3(), bassinVersant);
-                        }
-                        if (triangle.getSegment3().getTrigauche() != null) {
-                            triangle.getSegment3().getTrigauche().calculProjete(triangle.getSegment3(), bassinVersant);
-                        }
+     if (points.get(triangle.getPoint1()).getPosz() >= this.getPosz()) {
+     if (triangle.getSegment3().getTridroit() != null) {
+     triangle.getSegment3().getTridroit().calculProjete(triangle.getSegment3(), bassinVersant);
+     }
+     if (triangle.getSegment3().getTrigauche() != null) {
+     triangle.getSegment3().getTrigauche().calculProjete(triangle.getSegment3(), bassinVersant);
+     }
 
-                    }
-                }
-            }
+     }
+     }
+     }
 
-        }
-        return bassinVersant;
-    }
-*/
+     }
+     return bassinVersant;
+     }
+     */
 }

@@ -23,28 +23,30 @@ public class LectureWrl {
     private ArrayList&lt;Point3D&gt; listePoint;
     private ArrayList&lt;Triangle&gt; listeTriangle;
     
-<span class="nc" id="L26">    public LectureWrl(String source){</span>
-<span class="nc" id="L27">        this.source=source;</span>
-<span class="nc" id="L28">        listePoint=new ArrayList();</span>
-<span class="nc" id="L29">        listeTriangle=new ArrayList();</span>
-<span class="nc" id="L30">        lecture();</span>
-<span class="nc" id="L31">   }</span>
+<span class="fc" id="L26">    public LectureWrl(String source){</span>
+<span class="fc" id="L27">        this.source=source;</span>
+<span class="fc" id="L28">        listePoint=new ArrayList();</span>
+<span class="fc" id="L29">        listePoint.add(new Point3D(0,0,0));</span>
+<span class="fc" id="L30">        listeTriangle=new ArrayList();</span>
+<span class="fc" id="L31">        listeTriangle.add(new Triangle());</span>
+<span class="fc" id="L32">        lecture();</span>
+<span class="fc" id="L33">   }</span>
 
     public ArrayList&lt;Point3D&gt; getListePoint() {
-<span class="nc" id="L34">        return listePoint;</span>
+<span class="fc" id="L36">        return listePoint;</span>
     }
 
     public void setListePoint(ArrayList&lt;Point3D&gt; listePoint) {
-<span class="nc" id="L38">        this.listePoint = listePoint;</span>
-<span class="nc" id="L39">    }</span>
+<span class="nc" id="L40">        this.listePoint = listePoint;</span>
+<span class="nc" id="L41">    }</span>
 
     public ArrayList&lt;Triangle&gt; getListeTriangle() {
-<span class="nc" id="L42">        return listeTriangle;</span>
+<span class="fc" id="L44">        return listeTriangle;</span>
     }
 
     public void setListeTriangle(ArrayList&lt;Triangle&gt; listeTriangle) {
-<span class="nc" id="L46">        this.listeTriangle = listeTriangle;</span>
-<span class="nc" id="L47">    }</span>
+<span class="nc" id="L48">        this.listeTriangle = listeTriangle;</span>
+<span class="nc" id="L49">    }</span>
     
     
     
@@ -57,37 +59,37 @@ public class LectureWrl {
         try{
         String ligne;
         
-<span class="nc" id="L60">        BufferedReader fichier = new BufferedReader(new FileReader(source));</span>
+<span class="fc" id="L62">        BufferedReader fichier = new BufferedReader(new FileReader(source));</span>
         
-<span class="nc bnc" id="L62" title="All 2 branches missed.">        while(!(&quot;#x y z pt&quot;.equals(fichier.readLine())));</span>
+<span class="fc bfc" id="L64" title="All 2 branches covered.">        while(!(&quot;#x y z pt&quot;.equals(fichier.readLine())));</span>
         
-<span class="nc bnc" id="L64" title="All 2 branches missed.">        while(!(&quot;] # end point&quot;.equals(fichier.readLine()))){</span>
-<span class="nc" id="L65">            ligne=fichier.readLine();</span>
-<span class="nc" id="L66">            lecturePoints(ligne);</span>
+<span class="fc bfc" id="L66" title="All 2 branches covered.">        while(!(&quot;] # end point&quot;.equals(fichier.readLine()))){</span>
+<span class="fc" id="L67">            ligne=fichier.readLine();</span>
+<span class="fc" id="L68">            lecturePoints(ligne);</span>
         }
         
-<span class="nc bnc" id="L69" title="All 2 branches missed.">        for (int i=0;i&lt;3;i++){</span>
-<span class="nc" id="L70">                fichier.readLine();</span>
+<span class="fc bfc" id="L71" title="All 2 branches covered.">        for (int i=0;i&lt;3;i++){</span>
+<span class="fc" id="L72">                fichier.readLine();</span>
                 }
         
-<span class="nc bnc" id="L73" title="All 2 branches missed.">        while(!(&quot;&quot;.equals(fichier.readLine()))){</span>
-<span class="nc" id="L74">            ligne=fichier.readLine();</span>
-           // lectureTriangles(ligne);
+<span class="fc bfc" id="L75" title="All 2 branches covered.">        while(!(&quot;&quot;.equals(fichier.readLine()))){</span>
+<span class="fc" id="L76">            ligne=fichier.readLine();</span>
+<span class="fc" id="L77">           lectureTriangles(ligne);</span>
         }
         
         
         
-<span class="nc" id="L80">        fichier.close();</span>
+<span class="fc" id="L82">        fichier.close();</span>
         }
-<span class="nc" id="L82">        catch(FileNotFoundException e){</span>
-<span class="nc" id="L83">            e.printStackTrace();</span>
+<span class="nc" id="L84">        catch(FileNotFoundException e){</span>
+<span class="nc" id="L85">            e.printStackTrace();</span>
         }
-<span class="nc" id="L85">        catch(IOException e){</span>
-<span class="nc" id="L86">            e.printStackTrace();</span>
-<span class="nc" id="L87">        }</span>
+<span class="nc" id="L87">        catch(IOException e){</span>
+<span class="nc" id="L88">            e.printStackTrace();</span>
+<span class="pc" id="L89">        }</span>
         
         
-<span class="nc" id="L90">    }</span>
+<span class="fc" id="L92">    }</span>
 
     /**
      * Permet de créer un nouveau point à partir de la ligne lue et de l'ajouter à la liste
@@ -95,67 +97,67 @@ public class LectureWrl {
      */
     private void lecturePoints(String ligne) {
         
-<span class="nc" id="L98">        String delimiteurs = &quot; ,;&quot;;</span>
+<span class="fc" id="L100">        String delimiteurs = &quot; ,;&quot;;</span>
         
-<span class="nc" id="L100">        StringTokenizer tokenizer = new StringTokenizer(ligne,delimiteurs);</span>
+<span class="fc" id="L102">        StringTokenizer tokenizer = new StringTokenizer(ligne,delimiteurs);</span>
 
             double x;
             double y;
             double z;
             
-<span class="nc" id="L106">            x=Double.parseDouble(tokenizer.nextToken());</span>
-<span class="nc" id="L107">            y=Double.parseDouble(tokenizer.nextToken());</span>
-<span class="nc" id="L108">            z=Double.parseDouble(tokenizer.nextToken());</span>
+<span class="fc" id="L108">            x=Double.parseDouble(tokenizer.nextToken());</span>
+<span class="fc" id="L109">            y=Double.parseDouble(tokenizer.nextToken());</span>
+<span class="fc" id="L110">            z=Double.parseDouble(tokenizer.nextToken());</span>
             
-<span class="nc" id="L110">        Point3D p= new Point3D(x,y,z);</span>
+<span class="fc" id="L112">        Point3D p= new Point3D(x,y,z);</span>
         
-<span class="nc" id="L112">        listePoint.add(p);</span>
+<span class="fc" id="L114">        listePoint.add(p);</span>
         
-<span class="nc" id="L114">    }</span>
+<span class="fc" id="L116">    }</span>
 
     /**
      * Permet de créer un nouveau triangle à partir de la ligne lue et de l'ajouter à la liste
      * @param ligne 
      */
     
-    /**
+    
     private void lectureTriangles(String ligne) {
         
-        String delimiteurs = &quot; ,;  \t&quot;;
+<span class="fc" id="L126">        String delimiteurs = &quot; ,;  \t&quot;;</span>
         
-        StringTokenizer tokenizer = new StringTokenizer(ligne,delimiteurs);
+<span class="fc" id="L128">        StringTokenizer tokenizer = new StringTokenizer(ligne,delimiteurs);</span>
 
             int a;
             int b;
             int c;
             
-            a=Integer.parseInt(tokenizer.nextToken());
-            b=Integer.parseInt(tokenizer.nextToken());
-            c=Integer.parseInt(tokenizer.nextToken());
+<span class="fc" id="L134">            a=Integer.parseInt(tokenizer.nextToken());</span>
+<span class="fc" id="L135">            b=Integer.parseInt(tokenizer.nextToken());</span>
+<span class="fc" id="L136">            c=Integer.parseInt(tokenizer.nextToken());</span>
             
-            Point3D pointa = listePoint.get(a);
-            Point3D pointb = listePoint.get(b);
-            Point3D pointc = listePoint.get(c);
-            Triangle t = new Triangle();
-            if(Vecteur.distAngle((new Vecteur(pointa, pointb)).calculAngle(),(new Vecteur(pointa, pointc)).calculAngle())&lt;Math.PI){
+<span class="fc" id="L138">            Point3D pointa = listePoint.get(a);</span>
+<span class="fc" id="L139">            Point3D pointb = listePoint.get(b);</span>
+<span class="fc" id="L140">            Point3D pointc = listePoint.get(c);</span>
+<span class="fc" id="L141">            Triangle t = new Triangle();</span>
+<span class="fc bfc" id="L142" title="All 2 branches covered.">            if(Vecteur.distAngle((new Vecteur(pointa, pointb)).calculAngle(),(new Vecteur(pointa, pointc)).calculAngle())&lt;Math.PI){</span>
             
-            t.setPoint1(pointa);
-            t.setPoint2(pointb);
-            t.setPoint3(pointc);
+<span class="fc" id="L144">            t.setPoint1(a);</span>
+<span class="fc" id="L145">            t.setPoint2(b);</span>
+<span class="fc" id="L146">            t.setPoint3(c);</span>
             
             }else{
                 
-            t.setPoint1(pointa);
-            t.setPoint2(pointc);
-            t.setPoint3(pointb);
+<span class="fc" id="L150">            t.setPoint1(a);</span>
+<span class="fc" id="L151">            t.setPoint2(c);</span>
+<span class="fc" id="L152">            t.setPoint3(b);</span>
             
             
             } 
-            t.setSegment1(null);
-            t.setSegment2(null);
-            t.setSegment3(null); 
-            listeTriangle.add(t); 
-    }
-      */ 
+<span class="fc" id="L156">            t.setSegment1(0);</span>
+<span class="fc" id="L157">            t.setSegment2(0);</span>
+<span class="fc" id="L158">            t.setSegment3(0); </span>
+<span class="fc" id="L159">            listeTriangle.add(t); </span>
+<span class="fc" id="L160">    }</span>
+      
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.2.201409121644</span></div></body></html>

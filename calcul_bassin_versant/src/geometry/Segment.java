@@ -8,8 +8,12 @@ package geometry;
 import java.util.ArrayList;
 
 /**
- * gere les objets de type Segment prenant en compte les triangles juxtaposés et
- * leur état de traitement
+ * An edge in the triangulation. a WEdge is formed with two WPoint3D instances.
+ *
+ * A WEdge is linked to up to two WTriangle : one on its left, and one on its
+ * right. This WEdge is an edge of these WTriangle. The left and right sides are
+ * relative to the orientation of the edge.  *
+ *
  *
  * @author Utilisateur
  */
@@ -19,14 +23,15 @@ public class Segment {
     private int point2;
     private int tridroit;
     private int trigauche;
+    //an Wedge is considered to be treated if it the method 
     private boolean traiteDroit;
     private boolean traiteGauche;
 
     /**
      * classic constructor
      *
-     * @param point1
-     * @param point2
+     * @param point1 index of the first WPoint
+     * @param point2 index of the second WPoint
      */
     public Segment(int point1, int point2) {
         this.point1 = point1;
@@ -40,10 +45,10 @@ public class Segment {
     /**
      * complete constructor
      *
-     * @param point1
-     * @param point2
-     * @param tridroit
-     * @param trigauche
+     * @param point1 index of the first WPoint
+     * @param point2 index of the second WPoint
+     * @param tridroit index of the  WTriangle on the right
+     * @param trigauche index of the WTriangle on the left
      */
     public Segment(int point1, int point2, int tridroit, int trigauche) {
         this.point1 = point1;
@@ -72,8 +77,8 @@ public class Segment {
     }
 
     /**
-     * Compares the specified Segment with this Segment for equality. Returns
-     * true if all their elements are egals
+     * Compares the specified Segment with this Segment for equality. 
+     * Returns true if all their elements are egals
      *
      *
      * @param segment
@@ -308,10 +313,9 @@ public class Segment {
             segDroitMid = segments.size();
             segments.add(new Segment(pointPos, pointExtDroit));
 
-
             triDroit1 = triangles.size();
             triangles.add(new Triangle(seg1, segDroitMid, segDroitExt1, segments, points));
-         
+
             triDroit2 = triangles.size();
             triangles.add(new Triangle(segDroitExt2, segDroitMid, seg2, segments, points));
 
