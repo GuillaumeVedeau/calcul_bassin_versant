@@ -1,11 +1,14 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+/**
+ * Watershed is a library dedicated to the processing of watershed in a 2.5 triangulation of Delaunay
+ * 
+ * This library is developed at Ecole Centrales de Nantes as part of a practical project.
+ * 
+ * Watershed is a free software: you can redistribute it and/or modify it.
  */
-package geometry;
+package org.geometry;
 
 import java.util.ArrayList;
+import org.watershed.error.WatershedError;
 
 /**
  * An edge in the triangulation. a WEdge is formed with two WPoint3D instances.
@@ -17,7 +20,7 @@ import java.util.ArrayList;
  *
  * @author Utilisateur
  */
-public class Segment {
+public class WEdge {
 
     private int point1;
     private int point2;
@@ -33,11 +36,11 @@ public class Segment {
      * @param point1 index of the first WPoint
      * @param point2 index of the second WPoint
      */
-    public Segment(int point1, int point2) {
+    public WEdge(int point1, int point2) {
         this.point1 = point1;
         this.point2 = point2;
-        this.tridroit = 0;
-        this.trigauche = 0;
+        this.tridroit = -1;
+        this.trigauche = -1;
         this.traiteDroit = false;
         this.traiteGauche = false;
     }
@@ -50,7 +53,7 @@ public class Segment {
      * @param tridroit index of the  WTriangle on the right
      * @param trigauche index of the WTriangle on the left
      */
-    public Segment(int point1, int point2, int tridroit, int trigauche) {
+    public WEdge(int point1, int point2, int tridroit, int trigauche) {
         this.point1 = point1;
         this.point2 = point2;
         this.tridroit = tridroit;
@@ -62,11 +65,11 @@ public class Segment {
     /**
      * Default constructor
      */
-    public Segment() {
+    public WEdge() {
         this.point1 = 0;
         this.point2 = 0;
-        this.tridroit = 0;
-        this.trigauche = 0;
+        this.tridroit = -1;
+        this.trigauche = -1;
         this.traiteDroit = false;
         this.traiteGauche = false;
     }
@@ -77,14 +80,14 @@ public class Segment {
     }
 
     /**
-     * Compares the specified Segment with this Segment for equality. 
+     * Compares the specified WEdge with this WEdge for equality. 
      * Returns true if all their elements are egals
      *
      *
      * @param segment
      * @return
      */
-    public boolean equals(Segment segment) {
+    public boolean equals(WEdge segment) {
         return ((this.getPoint1() == segment.getPoint1())
                 && (this.getPoint2() == segment.getPoint2())
                 && this.getTridroit() == segment.getTridroit()
@@ -93,10 +96,10 @@ public class Segment {
                 && this.gettraiteDroit() == segment.gettraiteDroit());
     }
 
-    public int search(ArrayList<Segment> segments, ArrayList<Point3D> points) {
+    public int search(ArrayList<WEdge> segments, ArrayList<WPoint> points) {
         int position = 0;
         int posSegment = 0;
-        for (Segment segment : segments) {
+        for (WEdge segment : segments) {
             if ((points.get(this.getPoint1()).equals(points.get(segment.getPoint1()))) && points.get(this.getPoint2()).equals(points.get(segment.getPoint2()))
                     || (points.get(this.getPoint1()).equals(points.get(segment.getPoint2())) && points.get(this.getPoint2()).equals(points.get(segment.getPoint1())))) {
                 position = posSegment;
@@ -221,10 +224,10 @@ public class Segment {
      * @param triangles liste de triangles dans lequel il faut chercher ceux
      * juxtaposés au segment manipulé
      */
-    public void chercheTriangle(ArrayList<Triangle> triangles, ArrayList<Segment> segments) {
+    public void chercheTriangle(ArrayList<WTriangle> triangles, ArrayList<WEdge> segments) {
 
         int pos = 0;
-        for (Triangle triangle : triangles) {
+        for (WTriangle triangle : triangles) {
             if (triangle.getPoint2() == point1 && triangle.getPoint1() == point2) {
                 this.setTridroit(pos);
                 triangle.setSegment1(segments.indexOf(this));
@@ -275,19 +278,20 @@ public class Segment {
      * @param segments
      * @param triangles
      */
-    public void decoupe(int pointPos, int bassin, int passant, ArrayList<Triangle> bassinVersant, ArrayList<Point3D> points, ArrayList<Segment> segments, ArrayList<Triangle> triangles) {
+    public void decoupe(int pointPos, int bassin, int passant, ArrayList<WTriangle> bassinVersant, ArrayList<WPoint> points, ArrayList<WEdge> segments, ArrayList<WTriangle> triangles) throws WatershedError {
 
-        int pointExtGauche = 0, pointExtDroit = 0;
-        int seg1 = 0, seg2 = 0;
-        int segDroitExt1 = 0, segGaucheExt1 = 0, segDroitExt2 = 0, segGaucheExt2 = 0, segDroitMid = 0, segGaucheMid = 0;
-        int triDroit1 = 0, triDroit2 = 0, triGauche1 = 0, triGauche2 = 0;
+        int pointExtGauche = -1, pointExtDroit = -1;
+        int seg1 = -1, seg2 = -1;
+        int segDroitExt1 = -1, segGaucheExt1 = -1, segDroitExt2 = -1, segGaucheExt2 = -1, segDroitMid = -1, segGaucheMid = -1;
+        int triDroit1 = -1, triDroit2 = -1, triGauche1 = -1, triGauche2 = -1;
 
         seg1 = segments.size();
-        segments.add(new Segment(this.getPoint2(), pointPos));
+        segments.add(new WEdge(this.getPoint2(), pointPos));
         seg2 = segments.size();
-        segments.add(new Segment(pointPos, this.getPoint1()));
+        segments.add(new WEdge(pointPos, this.getPoint1()));
+        
         // découpe du 1er triangle  juxtaposé (droit)
-        if (this.getTridroit() > 0) {
+        if (this.getTridroit() >= 0) {
             if ((triangles.get(this.getTridroit()).getPoint1() == this.getPoint2() && triangles.get(this.getTridroit()).getPoint2() == this.getPoint1())
                     || (triangles.get(this.getTridroit()).getPoint1() == this.getPoint1() && triangles.get(this.getTridroit()).getPoint2() == this.getPoint2())) {
                 pointExtDroit = triangles.get(this.getTridroit()).getPoint3();
@@ -311,19 +315,20 @@ public class Segment {
             }
 
             segDroitMid = segments.size();
-            segments.add(new Segment(pointPos, pointExtDroit));
+            segments.add(new WEdge(pointPos, pointExtDroit));
 
             triDroit1 = triangles.size();
-            triangles.add(new Triangle(seg1, segDroitMid, segDroitExt1, segments, points));
+            triangles.add(new WTriangle(seg1, segDroitMid, segDroitExt1, segments, points));
 
             triDroit2 = triangles.size();
-            triangles.add(new Triangle(segDroitExt2, segDroitMid, seg2, segments, points));
+            triangles.add(new WTriangle(segDroitExt2, segDroitMid, seg2, segments, points));
 
             //ajoute les 2 nouveaux triangles au nouveau segment qui les sépare
             segments.get(segDroitMid).setTridroit(triDroit1);
             segments.get(segDroitMid).setTrigauche(triDroit2);
 
             // modifie les segment extérieurs pour qu'ils prennent en compte les 2 nouveaux triangles
+            
             if (this.getTridroit() == segments.get(segDroitExt1).getTridroit()) {
                 segments.get(segDroitExt1).setTridroit(triDroit1);
             } else {
@@ -363,14 +368,14 @@ public class Segment {
             }
 
             segGaucheMid = segments.size();
-            segments.add(new Segment(pointPos, pointExtGauche));
+            segments.add(new WEdge(pointPos, pointExtGauche));
 
             triGauche1 = triangles.size();
-            triangles.add(new Triangle(seg2, segGaucheMid, segGaucheExt1, segments, points));
+            triangles.add(new WTriangle(seg2, segGaucheMid, segGaucheExt1, segments, points));
             triGauche2 = triangles.size();
-            triangles.add(new Triangle(segGaucheExt2, segGaucheMid, seg1, segments, points));
+            triangles.add(new WTriangle(segGaucheExt2, segGaucheMid, seg1, segments, points));
 
-            //add 2 news Triangle to the 
+            //add 2 news WTriangle to the 
             segments.get(segGaucheMid).setTridroit(triGauche1);
             segments.get(segGaucheMid).setTrigauche(triGauche2);
 

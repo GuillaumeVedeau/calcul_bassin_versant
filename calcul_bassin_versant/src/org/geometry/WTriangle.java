@@ -1,18 +1,23 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+/**
+ * Watershed is a library dedicated to the processing of watershed in a 2.5
+ * triangulation of Delaunay
+ *
+ * This library is developed at Ecole Centrales de Nantes as part of a practical
+ * project.
+ *
+ * Watershed is a free software: you can redistribute it and/or modify it.
  */
-package geometry;
+package org.geometry;
 
 import java.util.ArrayList;
+import org.watershed.error.WatershedError;
 
 /**
- * gere les objet de type Triangle
+ * gere les objet de type WTriangle
  *
  * @author Utilisateur
  */
-public class Triangle {
+public class WTriangle {
 
     private int segment1;
     private int segment2;
@@ -21,12 +26,13 @@ public class Triangle {
     private int point1;
     private int point2;
     private int point3;
-    // approximation par defaut faite sur les calcul d'angle (1°)
-    private static double approximationAngulaire = 0.16;
+    // Is used as an approximation when a opreation is done between 2 
+    // its value is fixed at 1°by default
+    private static double approximationAngulaire = 0.08;
 
     /**
-     * Basic constructor based on Segment :the order of the point is based on
-     * the common point between each segment
+     * Basic constructor based on WEdge The order of points is based on the
+     * common point between each segment
      *
      * @param segment1
      * @param segment2
@@ -34,7 +40,7 @@ public class Triangle {
      * @param segments
      * @param points
      */
-    public Triangle(int segment1, int segment2, int segment3, ArrayList<Segment> segments, ArrayList<Point3D> points) {
+    public WTriangle(int segment1, int segment2, int segment3, ArrayList<WEdge> segments, ArrayList<WPoint> points) {
 
         this.segment1 = segment1;
         this.segment2 = segment2;
@@ -63,68 +69,32 @@ public class Triangle {
 
     /**
      * basic constructor based on Point It cannot be used as it is in the
-     * program, but need to be called by the other method construction
-     * beforehand.
+     * program as it lacks the parameters segments , but need to be called by
+     * the other method construction beforehand.
      *
      * @param point1
      * @param point2
      * @param point3
      */
-    public Triangle(int point1, int point2, int point3) {
+    public WTriangle(int point1, int point2, int point3) {
         this.point1 = point1;
         this.point2 = point2;
         this.point3 = point3;
-        this.segment1 = 0;
-        this.segment2 = 0;
-        this.segment3 = 0;
+        this.segment1 = -1;
+        this.segment2 = -1;
+        this.segment3 = -1;
     }
 
     /**
-     * default constructor
+     * Build a WTriangle by default. It cannot be used as it is now
      */
-    public Triangle() {
+    public WTriangle() {
         this.point1 = 0;
         this.point2 = 0;
         this.point3 = 0;
-        this.segment1 = 0;
-        this.segment2 = 0;
-        this.segment3 = 0;
-    }
-
-    /**
-     * Get the value of segment3
-     *
-     * @return the value of segment3
-     */
-    public int getSegment3() {
-        return segment3;
-    }
-
-    /**
-     * Set the value of segment3
-     *
-     * @param segment3 new value of segment3
-     */
-    public void setSegment3(int segment3) {
-        this.segment3 = segment3;
-    }
-
-    /**
-     * Get the value of segment2
-     *
-     * @return the value of segment2
-     */
-    public int getSegment2() {
-        return segment2;
-    }
-
-    /**
-     * Set the value of segment2
-     *
-     * @param segment2 new value of segment2
-     */
-    public void setSegment2(int segment2) {
-        this.segment2 = segment2;
+        this.segment1 = -1;
+        this.segment2 = -1;
+        this.segment3 = -1;
     }
 
     /**
@@ -146,6 +116,42 @@ public class Triangle {
     }
 
     /**
+     * Get the value of segment2
+     *
+     * @return the value of segment2
+     */
+    public int getSegment2() {
+        return segment2;
+    }
+
+    /**
+     * Set the value of segment2
+     *
+     * @param segment2 new value of segment2
+     */
+    public void setSegment2(int segment2) {
+        this.segment2 = segment2;
+    }
+
+    /**
+     * Get the value of segment3
+     *
+     * @return the value of segment3
+     */
+    public int getSegment3() {
+        return segment3;
+    }
+
+    /**
+     * Set the value of segment3
+     *
+     * @param segment3 new value of segment3
+     */
+    public void setSegment3(int segment3) {
+        this.segment3 = segment3;
+    }
+
+    /**
      * Get the value of point1
      *
      * @return the value of point1
@@ -155,7 +161,7 @@ public class Triangle {
     }
 
     /**
-     * Set the value of segment1
+     * Set the value of point1
      *
      * @param point1 new value of point1
      */
@@ -173,7 +179,7 @@ public class Triangle {
     }
 
     /**
-     * Set the value of segment2
+     * Set the value of point2
      *
      * @param point2 new value of point2
      */
@@ -191,141 +197,12 @@ public class Triangle {
     }
 
     /**
-     * Set the value of segment3
+     * Set the value of point3
      *
      * @param point3 new value of point3
      */
     public void setPoint3(int point3) {
         this.point3 = point3;
-    }
-
-    /**
-     * Build the objects Segment needed in the program and
-     *
-     * @param triangles
-     * @param segments if there are allready some
-     */
-    public static void construction(ArrayList<Triangle> triangles, ArrayList<Segment> segments) {
-
-        boolean found1, found2, found3;
-        int posSegment;
-        int posTriangle = 0;
-
-        for (Triangle triangle : triangles) {
-
-            if (triangle != null) {
-
-                if (triangle.getSegment1() <= 0) {
-
-                    found1 = false;
-                    posSegment = 0;
-                    for (Segment segment : segments) {
-
-                        if (segment.getPoint1() == triangle.getPoint1() && segment.getPoint2() == triangle.getPoint2()) {
-                            triangle.setSegment1(posSegment);
-                            segment.setTrigauche(posTriangle);
-                            found1 = true;
-                        }
-                        if ((segment.getPoint2() == triangle.getPoint1() && segment.getPoint1() == triangle.getPoint2())) {
-                            triangle.setSegment1(posSegment);
-                            segment.setTridroit(posTriangle);
-                            found1 = true;
-                        }
-                        posSegment++;
-                    }
-                    if (!found1) {
-
-                        triangle.setSegment1(segments.size());
-                        segments.add(new Segment(triangle.getPoint1(), triangle.getPoint2(), 0, posTriangle));
-                    }
-                }
-
-                if (triangle.getSegment2() <= 0) {
-
-                    found2 = false;
-                    posSegment = 0;
-                    for (Segment segment : segments) {
-
-                        if (segment.getPoint1() == triangle.getPoint2() && segment.getPoint2() == triangle.getPoint3()) {
-                            triangle.setSegment2(posSegment);
-                            segment.setTrigauche(posTriangle);
-                            found2 = true;
-                        }
-                        if ((segment.getPoint2() == triangle.getPoint2() && segment.getPoint1() == triangle.getPoint3())) {
-                            triangle.setSegment2(posSegment);
-                            segment.setTridroit(posTriangle);
-                            found2 = true;
-                        }
-                        posSegment++;
-                    }
-                    if (!found2) {
-
-                        triangle.setSegment2(segments.size());
-                        segments.add(new Segment(triangle.getPoint2(), triangle.getPoint3(), 0, posTriangle));
-                    }
-                }
-
-                if (triangle.getSegment3() <= 0) {
-
-                    found3 = false;
-                    posSegment = 0;
-                    for (Segment segment : segments) {
-
-                        if (segment.getPoint1() == triangle.getPoint3() && segment.getPoint2() == triangle.getPoint1()) {
-                            triangle.setSegment3(posSegment);
-                            segment.setTrigauche(posTriangle);
-                            found3 = true;
-                        }
-                        if ((segment.getPoint2() == triangle.getPoint3() && segment.getPoint1() == triangle.getPoint1())) {
-                            triangle.setSegment3(posSegment);
-                            segment.setTridroit(posTriangle);
-                            found3 = true;
-                        }
-                        posSegment++;
-                    }
-                    if (!found3) {
-
-                        triangle.setSegment3(segments.size());
-                        segments.add(new Segment(triangle.getPoint3(), triangle.getPoint1(), 0, posTriangle));
-                    }
-                }
-            }
-            posTriangle++;
-        }
-
-    }
-
-    @Override
-    /**
-     * surcharge de toString
-     */
-    public String toString() {
-        return ("\n\nTriangle:" + "\n\tpoint1\t" + point1 + "\n\tpoint2\t" + point2 + "\n\tpoint3\t" + point3 + "\n\tseg1\t" + segment1 + "\n\tseg2\t" + segment2 + "\n\tseg3\t" + segment3);
-    }
-
-    /**
-     * Renvoie l'égalité complete entre 2 objets de type Triangle ( les objets
-     * le constituant sont identiques)
-     *
-     * @param triangle
-     * @return
-     */
-    public boolean equals(Triangle triangle) {
-
-        if (triangle == null) {
-            return false;
-        } else {
-
-            return ((this.getPoint1() == triangle.getPoint1()
-                    && this.getPoint2() == triangle.getPoint2()
-                    && this.getPoint3() == triangle.getPoint3())
-                    || (this.getPoint1() == (triangle.getPoint2())
-                    && this.getPoint2() == (triangle.getPoint3())
-                    && this.getPoint3() == (triangle.getPoint1()))
-                    || (this.getPoint1() == (triangle.getPoint3())
-                    && this.getPoint2() == (triangle.getPoint1())
-                    && this.getPoint3() == (triangle.getPoint2())));
-        }
     }
 
     /**
@@ -347,12 +224,143 @@ public class Triangle {
     }
 
     /**
+     * Build the objects WEdge needed in the program and the relations between
+     * them
+     *
+     * @param triangles
+     * @param segments if there are allready some
+     */
+    public static void construction(ArrayList<WTriangle> triangles, ArrayList<WEdge> segments) {
+
+        int posTriangle = 0;
+
+        for (WTriangle triangle : triangles) {
+
+            if (triangle.getSegment1() < 0) {
+                boolean trouve = false;
+                int pos = 0;
+                for (WEdge segment : segments) {
+
+                    if (triangle.getPoint1() == segment.getPoint1()) {
+                        if (triangle.getPoint2() == segment.getPoint2()) {
+                            triangle.setSegment1(pos);
+                            segment.setTrigauche(posTriangle);
+                            trouve = true;
+                        }
+                    }
+                    if (triangle.getPoint1() == segment.getPoint2()) {
+                        if (triangle.getPoint2() == segment.getPoint1()) {
+                            triangle.setSegment1(pos);
+                            segment.setTridroit(posTriangle);
+                            trouve = true;
+                        }
+                    }
+                    pos++;
+                }
+                if (!trouve) {
+                    triangle.setSegment1(segments.size());
+                    segments.add(new WEdge(triangle.getPoint1(), triangle.getPoint2(), -1, posTriangle));
+                }
+            }
+
+            if (triangle.getSegment2() < 0) {
+                boolean trouve = false;
+                int pos = 0;
+                for (WEdge segment : segments) {
+
+                    if (triangle.getPoint2() == segment.getPoint1()) {
+                        if (triangle.getPoint3() == segment.getPoint2()) {
+                            triangle.setSegment2(pos);
+                            segment.setTrigauche(posTriangle);
+                            trouve = true;
+                        }
+                    }
+                    if (triangle.getPoint2() == segment.getPoint2()) {
+                        if (triangle.getPoint3() == segment.getPoint1()) {
+                            triangle.setSegment2(pos);
+                            segment.setTridroit(posTriangle);
+                            trouve = true;
+                        }
+                    }
+                    pos++;
+                }
+                if (!trouve) {
+                    triangle.setSegment2(segments.size());
+                    segments.add(new WEdge(triangle.getPoint2(), triangle.getPoint3(), -1, posTriangle));
+                }
+            }
+
+            if (triangle.getSegment3() < 0) {
+                boolean trouve = false;
+                int pos = 0;
+                for (WEdge segment : segments) {
+
+                    if (triangle.getPoint3() == segment.getPoint1()) {
+                        if (triangle.getPoint1() == segment.getPoint2()) {
+                            triangle.setSegment3(pos);
+                            segment.setTrigauche(posTriangle);
+                            trouve = true;
+                        }
+                    }
+                    if (triangle.getPoint3() == segment.getPoint2()) {
+                        if (triangle.getPoint1() == segment.getPoint1()) {
+                            triangle.setSegment3(pos);
+                            segment.setTridroit(posTriangle);
+                            trouve = true;
+                        }
+                    }
+                    pos++;
+                }
+                if (!trouve) {
+                    triangle.setSegment3(segments.size());
+                    segments.add(new WEdge(triangle.getPoint3(), triangle.getPoint1(), -1, posTriangle));
+                }
+            }
+        
+        posTriangle++;
+        }
+    }
+
+    @Override
+    /**
+     * overwrite of toString
+     */
+    public String toString() {
+        return ("\n\nTriangle:" + "\n\tpoint1\t" + point1 + "\n\tpoint2\t" + point2 + "\n\tpoint3\t" + point3 + "\n\tseg1\t" + segment1 + "\n\tseg2\t" + segment2 + "\n\tseg3\t" + segment3);
+    }
+
+    /**
+     * Renvoie l'égalité complete entre 2 objets de type WTriangle ( les objets
+     * le constituant sont identiques)
+     *
+     * @param triangle
+     * @return
+     */
+    public boolean equals(WTriangle triangle) {
+
+        if (triangle == null) {
+            return false;
+        } else {
+
+            return ((this.getPoint1() == triangle.getPoint1()
+                    && this.getPoint2() == triangle.getPoint2()
+                    && this.getPoint3() == triangle.getPoint3())
+                    || (this.getPoint1() == (triangle.getPoint2())
+                    && this.getPoint2() == (triangle.getPoint3())
+                    && this.getPoint3() == (triangle.getPoint1()))
+                    || (this.getPoint1() == (triangle.getPoint3())
+                    && this.getPoint2() == (triangle.getPoint1())
+                    && this.getPoint3() == (triangle.getPoint2())));
+        }
+    }
+
+    /**
      * calcule le vecteur pente en 2D indiquant la direction de plus forte
      * descente d'une surface en 2.5D
      *
      * @return
      */
-    public Vecteur calculPente(ArrayList<Point3D> points) {
+    public Vecteur calculPente(ArrayList<WPoint> points) {
         Vecteur pente = new Vecteur(0, 0);
         double x1 = points.get(this.getPoint1()).getPosx() - points.get(this.getPoint2()).getPosx();
         double x2 = points.get(this.getPoint1()).getPosx() - points.get(this.getPoint3()).getPosx();
@@ -383,20 +391,28 @@ public class Triangle {
      * @param points
      * @param bassinVersant
      */
-    public void calculProjete(int segment, ArrayList<Triangle> triangles, ArrayList<Segment> segments, ArrayList<Point3D> points, ArrayList<Triangle> bassinVersant) {
-        
-        
-        if ((!segments.get(segment).gettraiteDroit() && this.equals(triangles.get(segments.get(segment).getTridroit()))) || (!segments.get(segment).getTraiteGauche()
-                && this.equals(triangles.get(segments.get(segment).getTrigauche())))) {
+    public void calculProjete(int segment, ArrayList<WTriangle> triangles, ArrayList<WEdge> segments, ArrayList<WPoint> points, ArrayList<WTriangle> bassinVersant) throws WatershedError {
 
-            if (this.equals(triangles.get(segments.get(segment).getTridroit()))) {
+        System.out.println(this);
+        boolean traiter = false;
+
+        if (segments.get(segment).getTridroit() >= 0) {
+            if ((!segments.get(segment).gettraiteDroit()) && this.equals(triangles.get(segments.get(segment).getTridroit()))) {
+                traiter = true;
                 segments.get(segment).setTraiteDroit(true);
-            } else {
+            }
+        }
+        if (segments.get(segment).getTrigauche() >= 0) {
+            if ((!segments.get(segment).getTraiteGauche()) && (this.equals(triangles.get(segments.get(segment).getTrigauche())))) {
+                traiter = true;
                 segments.get(segment).setTraiteGauche(true);
             }
+        }
 
-            int pointA = 0, pointB = 0, pointC = 0;
-            int segmentAB = 0, segmentBC = 0, segmentAC = 0;
+        if (traiter) {
+
+            int pointA = -1, pointB = -1, pointC = -1;
+            int segmentAB = -1, segmentBC = -1, segmentAC = -1;
 
             Vecteur pente = this.calculPente(points);
 
@@ -472,9 +488,9 @@ public class Triangle {
                 // projection sur le triangle entier dans le cas d'une surface horizontale
                 bassinVersant.add(this);
 
-                if (segments.get(segmentAB).getTridroit() > 0) {
+                if (segments.get(segmentAB).getTridroit() >= 0) {
                     if (triangles.get(segments.get(segmentAB).getTridroit()).equals(this)) {
-                        if (segments.get(segmentAB).getTrigauche() > 0) {
+                        if (segments.get(segmentAB).getTrigauche() >= 0) {
                             triangles.get(segments.get(segmentAB).getTrigauche()).calculProjete(segmentAB, triangles, segments, points, bassinVersant);
 
                         }
@@ -483,9 +499,9 @@ public class Triangle {
                     }
                 }
 
-                if (segments.get(segmentAC).getTridroit() > 0) {
+                if (segments.get(segmentAC).getTridroit() >= 0) {
                     if (triangles.get(segments.get(segmentAC).getTridroit()).equals(this)) {
-                        if (segments.get(segmentAC).getTrigauche() > 0) {
+                        if (segments.get(segmentAC).getTrigauche() >= 0) {
 
                             triangles.get(segments.get(segmentAC).getTrigauche()).calculProjete(segmentAC, triangles, segments, points, bassinVersant);
 
@@ -496,9 +512,8 @@ public class Triangle {
                 }
             } else {
 
-               
                 double anglePente = pente1.calculAngle();
-                
+
                 if (((Vecteur.distAngle(angleBC, anglePente) - Vecteur.distAngle(angleBC, angleCB)) < approximationAngulaire) || (Math.abs(angleBC - anglePente) < approximationAngulaire)) {
                     //1er cas: pas de propagation:
                     //rien pour le moment, il n'y a pas de propagation donc pas d'appel récursif
@@ -510,9 +525,9 @@ public class Triangle {
                         // projection sur le triangle entier
                         bassinVersant.add(this);
 
-                        if (segments.get(segmentAB).getTridroit() > 0) {
+                        if (segments.get(segmentAB).getTridroit() >= 0) {
                             if (triangles.get(segments.get(segmentAB).getTridroit()).equals(this)) {
-                                if (segments.get(segmentAB).getTrigauche() > 0) {
+                                if (segments.get(segmentAB).getTrigauche() >= 0) {
                                     triangles.get(segments.get(segmentAB).getTrigauche()).calculProjete(segmentAB, triangles, segments, points, bassinVersant);
 
                                 }
@@ -534,13 +549,13 @@ public class Triangle {
 
                     } else { // Les 2 cas précédents ont priorité sur les 2 qui suivent pour les cas qui sont en commun
 
-                        Point3D separation = new Point3D(0, 0, 0);
+                        WPoint separation = new WPoint(0, 0, 0);
 
                         //3eme cas : propagation partielle sur le triangle, comprenant une partie du segment AC
                         if (Vecteur.distAngle(angleCB, anglePente) <= Vecteur.distAngle(angleCB, angleAB)) {
 
                             //projection de B sur le segmentAC suivant la pente 
-                            separation = Point3D.intersection(segments.get(segmentAC), points.get(pointB), pente, points);
+                            separation = WPoint.intersection(segments.get(segmentAC), points.get(pointB), pente, points);
                             int separateur = points.size();
                             points.add(separation);
                             segments.get(segmentAC).decoupe(separateur, triangles.indexOf(this), pointB, bassinVersant, points, segments, triangles);
@@ -551,7 +566,7 @@ public class Triangle {
                         if (Vecteur.distAngle(angleAC, anglePente) <= Vecteur.distAngle(angleAC, angleBC)) {
 
                             // projection de C sur le segmentAB suivant la pente
-                            separation = Point3D.intersection(segments.get(segmentAB), points.get(pointC), pente, points);
+                            separation = WPoint.intersection(segments.get(segmentAB), points.get(pointC), pente, points);
                             int separateur = points.size();
                             points.add(separation);
                             segments.get(segmentAB).decoupe(separateur, triangles.indexOf(this), pointB, bassinVersant, points, segments, triangles);
@@ -560,20 +575,6 @@ public class Triangle {
                     }
                 }
             }
-        }
-    }
-
-    public void seekSegment(ArrayList<Segment> segments, ArrayList<Point3D> points) {
-
-        boolean found1 = false, found2 = false, found3 = false;
-        int position = 1;
-        for (Segment segment : segments) {
-
-            if ((segment.getPoint1() == this.getPoint1() && segment.getPoint2() == this.getPoint2())
-                    || (segment.getPoint2() == this.getPoint1() && segment.getPoint1() == this.getPoint2())) {
-
-            }
-
         }
     }
 

@@ -1,0 +1,131 @@
+#VRML V2.0 utf8
+Background{
+skyColor 1 1 1
+}
+
+Transform {
+scale 1 1 1
+children [
+Shape {
+appearance Appearance {
+material Material {
+diffuseColor 1 1 .6
+} # end material
+} # end appearance
+geometry IndexedFaceSet {
+convex FALSE
+solid FALSE
+
+coord Coordinate {
+point [
+#x y z pt
+ #Point 0
+ 0.0 1.0 2.0 
+ #Point 1
+ 1.0 1.0 3.0
+ #Point 2
+ 2.0 1.0 4.0
+ #Point 3
+ 3.0 1.0 5.0
+ #Point 4
+ 4.0 1.0 6.0
+ #Point 5
+ 0.5 0.0 1.0 
+ #Point 6
+ 1.5 0.0 2.0
+ #Point 7
+ 2.5 0.0 3.0
+ #Point 8
+ 3.5 0.0 4.0
+ #Point 9
+ 0.5 2.0 1.0
+ #Point 10
+ 1.5 2.0 2.0 
+ #Point 11
+ 2.5 2.0 3.0
+ #Point 12
+ 3.5 2.0 4.0
+ #Point 13
+ 0.9285714285714286 0.2857142857142857 4.142857142857142
+] # end point
+} # end coord
+
+coordIndex [
+#triangle 0
+0	1	5	-1
+#triangle 1
+1	5	6	-1
+#triangle 2
+1	2	6	-1
+#triangle 3
+2	6	7	-1
+#triangle 4
+2	3	7	-1
+#triangle 5
+3	7	8	-1
+#triangle 6
+3	4	8	-1
+#triangle 7
+0	9	1	-1
+#triangle 8
+1	9	10	-1
+#triangle 9
+1	10	2	-1
+#triangle 10
+10	11	2	-1
+#triangle 11
+11	2	3	-1
+#triangle 12
+11	3	12	-1
+#triangle 13
+12	2	4	-1
+
+#triangle 14
+3	15	7	-1
+#triangle 15
+3	16	7	-1
+#triangle 16
+3	15	7	-1
+] # end coordIndex
+
+# color definitions
+colorPerVertex FALSE
+color Color {
+color [
+#defining a palette of colors to use in the colorIndex
+0.0 1.0 0.0 # color #0 is green
+1.0 0.75 0.5 # color #1 is wall
+] # end inner color group
+} # end color node
+colorIndex [
+#color node
+0 #triangle 0
+0 #triangle 1
+0 #triangle 2
+0 #triangle 3
+0 #triangle 4
+0 #triangle 5
+0 #triangle 6
+0 #triangle 7
+0 #triangle 8
+0 #triangle 9
+0 #triangle 10
+0 #triangle 11
+0 #triangle 12
+0 #triangle 13
+1 #triangle 14
+1 #triangle 15
+1 #triangle 16
+] # end colorIndex
+
+} # end geometry
+} # end shape
+] # end children
+} # end transform
+
+
+Viewpoint {
+description "middle"
+position 0 0 12862.903130537481
+} # end viewpoint
+

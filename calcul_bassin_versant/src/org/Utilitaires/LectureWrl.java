@@ -1,17 +1,23 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+/**
+ * Watershed is a library dedicated to the processing of watershed in a 2.5 triangulation of Delaunay
+ * 
+ * This library is developed at Ecole Centrales de Nantes as part of a practical project.
+ * 
+ * Watershed is a free software: you can redistribute it and/or modify it.
  */
-package Utilitaires;
 
-import geometry.*;
+package org.Utilitaires;
+
+import org.geometry.WPoint;
+import org.geometry.WTriangle;
+import org.geometry.Vecteur;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.StringTokenizer;
+import org.watershed.error.WatershedError;
 
 /**
  *
@@ -21,31 +27,31 @@ import java.util.StringTokenizer;
 public class LectureWrl {
    
     private final  String source;
-    private ArrayList<Point3D> listePoint;
-    private ArrayList<Triangle> listeTriangle;
+    private ArrayList<WPoint> listePoint;
+    private ArrayList<WTriangle> listeTriangle;
     
-    public LectureWrl(String source){
+    public LectureWrl(String source) throws WatershedError{
         this.source=source;
         listePoint=new ArrayList();
-        listePoint.add(new Point3D(0,0,0));
+        listePoint.add(new WPoint(0,0,0));
         listeTriangle=new ArrayList();
-        listeTriangle.add(new Triangle());
+        listeTriangle.add(new WTriangle());
         lecture();
    }
 
-    public ArrayList<Point3D> getListePoint() {
+    public ArrayList<WPoint> getListePoint() {
         return listePoint;
     }
 
-    public void setListePoint(ArrayList<Point3D> listePoint) {
+    public void setListePoint(ArrayList<WPoint> listePoint) {
         this.listePoint = listePoint;
     }
 
-    public ArrayList<Triangle> getListeTriangle() {
+    public ArrayList<WTriangle> getListeTriangle() {
         return listeTriangle;
     }
 
-    public void setListeTriangle(ArrayList<Triangle> listeTriangle) {
+    public void setListeTriangle(ArrayList<WTriangle> listeTriangle) {
         this.listeTriangle = listeTriangle;
     }
     
@@ -55,7 +61,7 @@ public class LectureWrl {
      * Permet de lire un fichier au format wrl et de récupérer les informations qu'il contient (triangles du maillage)
      */
     @SuppressWarnings("empty-statement")
-    public void lecture(){
+    public void lecture() throws WatershedError{
         
         try{
         String ligne;
@@ -96,7 +102,7 @@ public class LectureWrl {
      * Permet de créer un nouveau point à partir de la ligne lue et de l'ajouter à la liste
      * @param ligne 
      */
-    private void lecturePoints(String ligne) {
+    private void lecturePoints(String ligne) throws WatershedError {
         
         String delimiteurs = " ,;";
         
@@ -110,7 +116,7 @@ public class LectureWrl {
             y=Double.parseDouble(tokenizer.nextToken());
             z=Double.parseDouble(tokenizer.nextToken());
             
-        Point3D p= new Point3D(x,y,z);
+        WPoint p= new WPoint(x,y,z);
         
         listePoint.add(p);
         
@@ -122,7 +128,7 @@ public class LectureWrl {
      */
     
     
-    private void lectureTriangles(String ligne) {
+    private void lectureTriangles(String ligne) throws WatershedError {
         
         String delimiteurs = " ,;  \t";
         
@@ -136,10 +142,10 @@ public class LectureWrl {
             b=Integer.parseInt(tokenizer.nextToken());
             c=Integer.parseInt(tokenizer.nextToken());
             
-            Point3D pointa = listePoint.get(a);
-            Point3D pointb = listePoint.get(b);
-            Point3D pointc = listePoint.get(c);
-            Triangle t = new Triangle();
+            WPoint pointa = listePoint.get(a);
+            WPoint pointb = listePoint.get(b);
+            WPoint pointc = listePoint.get(c);
+            WTriangle t = new WTriangle();
             if(Vecteur.distAngle((new Vecteur(pointa, pointb)).calculAngle(),(new Vecteur(pointa, pointc)).calculAngle())<Math.PI){
             
             t.setPoint1(a);

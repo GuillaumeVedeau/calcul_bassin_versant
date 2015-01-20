@@ -1,9 +1,13 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+/**
+ * Watershed is a library dedicated to the processing of watershed in a 2.5
+ * triangulation of Delaunay
+ *
+ * This library is developed at Ecole Centrales de Nantes as part of a practical
+ * project.
+ *
+ * Watershed is a free software: you can redistribute it and/or modify it.
  */
-package geometry;
+package org.geometry;
 
 import java.util.ArrayList;
 import org.watershed.error.WatershedError;
@@ -14,101 +18,58 @@ import org.watershed.error.WatershedError;
  * @author Antoine Rigoureau
  * @author Guillaume Vedeau
  */
-public class Point3D {
+public class WPoint {
 
     private double posx;
     private double posy;
     private double posz;
 
     /**
-     *Initialize point
+     * Initialize point
+     *
      * @param x
      * @param y
      * @param z
-     * @throws DelaunayError If x, y or z is not set. 63
+     * @throws WatershedError If x, y or z is not set
      */
-     private void init(double x, double y, double z) throws WatershedError {
-         		if (Double.isNaN(x) || Double.isNaN(y) || Double.isNaN(z)) {
-            			throw new WatershedError(WatershedError.WatershedError_ERROR_ERROR_POINT_XYZ);
-             		}
-         		this.posx = x;
-                         this.posy = y;
-                         this.posz = z;
-         	}
+    private void init(double x, double y, double z) throws WatershedError {
+        if (Double.isNaN(x) || Double.isNaN(y) || Double.isNaN(z)) {
+            throw new WatershedError(WatershedError.WATERSHED_ERROR_ERROR_POINT_XYZ);
+        }
+        this.posx = x;
+        this.posy = y;
+        this.posz = z;
+    }
 
     /**
-     * classic constructor
+     * Build a point at coordinates x,y,z
      *
      * @param posx
      * @param posy
      * @param posz
+     * @throws WatershedError WatershedError
      */
-    public Point3D(double posx, double posy, double posz) {
-        this.posx = posx;
-        this.posy = posy;
-        this.posz = posz;
-    }
-
-    public Point3D() {
-        this.posx = 0;
-        this.posy = 0;
-        this.posz = 0;
+    public WPoint(double posx, double posy, double posz) throws WatershedError {
+        init(posx, posy, posz);
     }
 
     /**
-     * Teste l'égalité entre 2 points
+     * Build a point at the origin
      *
-     * @param point
-     * @return
+     * @throws WatershedError WatershedError
      */
-    public boolean equals(Point3D point) {
-        return (this.getPosx() == point.getPosx()
-                && this.getPosy() == point.getPosy()
-                && this.getPosz() == point.getPosz());
-    }
-
-    @Override
-    /**
-     * surcharge de toString
-     */
-    public String toString() {
-        return ("\tx:" + posx + "\ty:" + posy + "\tz:" + posz); //To change body of generated methods, choose Tools | Templates.
+    public WPoint() throws WatershedError {
+        init(0, 0, 0);
     }
 
     /**
-     * Get the value of posz
+     * Build a point as a copy of another point
      *
-     * @return the value of posz
+     * @param pt
+     * @throws WatershedError WatershedError
      */
-    public double getPosz() {
-        return posz;
-    }
-
-    /**
-     * Set the value of posz
-     *
-     * @param posz new value of posz
-     */
-    public void setPosz(double posz) {
-        this.posz = posz;
-    }
-
-    /**
-     * Get the value of posy
-     *
-     * @return the value of posy
-     */
-    public double getPosy() {
-        return posy;
-    }
-
-    /**
-     * Set the value of posy
-     *
-     * @param posy new value of posy
-     */
-    public void setPosy(double posy) {
-        this.posy = posy;
+    public WPoint(WPoint pt) throws WatershedError {
+        init(pt.getPosx(), pt.getPosy(), pt.getPosz());
     }
 
     /**
@@ -130,6 +91,69 @@ public class Point3D {
     }
 
     /**
+     * Get the value of posy
+     *
+     * @return the value of posy
+     */
+    public double getPosy() {
+        return posy;
+    }
+
+    /**
+     * Set the value of posy
+     *
+     * @param posy new value of posy
+     */
+    public void setPosy(double posy) {
+        this.posy = posy;
+    }
+
+    /**
+     * Get the value of posz
+     *
+     * @return the value of posz
+     */
+    public double getPosz() {
+        return posz;
+    }
+
+    /**
+     * Set the value of posz
+     *
+     * @param posz new value of posz
+     */
+    public void setPosz(double posz) {
+        this.posz = posz;
+    }
+
+    /**
+     * Check the egality between 2 WPoint
+     *
+     * @param point
+     * @return
+     */
+    public boolean equals(WPoint point) {
+        
+        if (point == null){
+            return false;
+        }else{
+            
+        
+        return (this.getPosx() == point.getPosx()
+                && this.getPosy() == point.getPosy()
+                && this.getPosz() == point.getPosz());
+        }
+    }
+
+    @Override
+    /**
+     * surcharge de toString
+     */
+    public String toString() {
+        return ("\tx:" + posx + "\ty:" + posy + "\tz:" + posz); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    /**
      * renvoie le point de projection d'un point sur un segment suivant un
      * vecteur
      *
@@ -138,10 +162,10 @@ public class Point3D {
      * @param vecteur
      * @return
      */
-    public static Point3D intersection(Segment segment, Point3D point, Vecteur vecteur, ArrayList<Point3D> points) {
+    public static WPoint intersection(WEdge segment, WPoint point, Vecteur vecteur, ArrayList<WPoint> points) throws WatershedError {
         double a1, b1, c1;
         double a2, b2, c2;
-        Point3D intersect = new Point3D(0, 0, 0);
+        WPoint intersect = new WPoint(0, 0, 0);
         int pointSeg1 = segment.getPoint1();
         int pointSeg2 = segment.getPoint2();
 
@@ -172,12 +196,23 @@ public class Point3D {
 
     }
     /*
-     public ArrayList<Triangle> calculBassin(ArrayList<Triangle> triangles, ArrayList<Segment> segment, ArrayList<Point3D> points) {
+     public void initialisation(ArrayList<WTriangle> triangles, ArrayList<WEdge> segments, ArrayList<WPoint> points, ArrayList<WTriangle> watershed) {
 
-     ArrayList<Triangle> bassinVersant = new ArrayList<>();
-
-     for (Triangle triangle : triangles) {
-     if (points.get(triangle.getPoint1()).equals(this)) {
+         int depart;
+         int pos = 0;
+         for(WPoint point : points){
+             if(this.equals(point)){
+                 depart = pos;
+             }
+             pos++;
+         }
+         
+   
+     for (WEdge segment : segments) {
+         
+     if (segment.getPoint1() == depart) {
+         
+         // first case : 
      if (triangle.getPoint2().getPosz() >= this.getPosz()) {
 
      if (triangle.getSegment1().getTridroit() != null) {
