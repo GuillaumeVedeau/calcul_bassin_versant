@@ -11,6 +11,7 @@ package org.geometry;
 
 import java.util.ArrayList;
 import org.watershed.error.WatershedError;
+import static org.watershed.error.WatershedError.WATERSHED_ERROR_POINT_NOT_FOUND;
 
 /**
  * the smallest element of a WTriangle
@@ -23,6 +24,7 @@ public class WPoint {
     private double posx;
     private double posy;
     private double posz;
+    private boolean started = false;
 
     /**
      * Initialize point
@@ -127,21 +129,38 @@ public class WPoint {
     }
 
     /**
+     * Get the value of started
+     *
+     * @return
+     */
+    public boolean isStarted() {
+        return started;
+    }
+
+    /**
+     * Set the value of started
+     *
+     * @param started
+     */
+    public void setStarted(boolean started) {
+        this.started = started;
+    }
+
+    /**
      * Check the egality between 2 WPoint
      *
      * @param point
      * @return
      */
     public boolean equals(WPoint point) {
-        
-        if (point == null){
+
+        if (point == null) {
             return false;
-        }else{
-            
-        
-        return (this.getPosx() == point.getPosx()
-                && this.getPosy() == point.getPosy()
-                && this.getPosz() == point.getPosz());
+        } else {
+
+            return (this.getPosx() == point.getPosx()
+                    && this.getPosy() == point.getPosy()
+                    && this.getPosz() == point.getPosz());
         }
     }
 
@@ -169,14 +188,14 @@ public class WPoint {
         int pointSeg1 = segment.getPoint1();
         int pointSeg2 = segment.getPoint2();
 
-        a1 = vecteur.getValx();
-        b1 = -vecteur.getValy();
+        a1 = vecteur.getValy();
+        b1 = -vecteur.getValx();
         c1 = (a1 * point.getPosx() + b1 * point.getPosy());
 
         Vecteur vect = new Vecteur(segment, points);
 
-        a2 = vect.getValx();
-        b2 = -vect.getValy();
+        a2 = vect.getValy();
+        b2 = -vect.getValx();
         c2 = (a2 * points.get(pointSeg1).getPosx() + b2 * points.get(pointSeg1).getPosy());
         if ((a1 == a2) && (b1 == b2)) {
             //TODO gerer l'erreur dû au parrallélisme
@@ -195,93 +214,93 @@ public class WPoint {
         return intersect;
 
     }
-    /*
-     public void initialisation(ArrayList<WTriangle> triangles, ArrayList<WEdge> segments, ArrayList<WPoint> points, ArrayList<WTriangle> watershed) {
 
-         int depart;
-         int pos = 0;
-         for(WPoint point : points){
-             if(this.equals(point)){
-                 depart = pos;
-             }
-             pos++;
-         }
-         
-   
-     for (WEdge segment : segments) {
-         
-     if (segment.getPoint1() == depart) {
-         
-         // first case : 
-     if (triangle.getPoint2().getPosz() >= this.getPosz()) {
-
-     if (triangle.getSegment1().getTridroit() != null) {
-     triangle.getSegment1().getTridroit().calculProjete(triangle.getSegment1(), bassinVersant);
-     }
-     if (triangle.getSegment1().getTrigauche() != null) {
-     triangle.getSegment1().getTrigauche().calculProjete(triangle.getSegment1(), bassinVersant);
-     }
-     }
-
-     if (triangle.getPoint3().getPosz() >= this.getPosz()) {
-     if (triangle.getSegment3().getTridroit() != null) {
-     triangle.getSegment3().getTridroit().calculProjete(triangle.getSegment3(), bassinVersant);
-     }
-     if (triangle.getSegment3().getTrigauche() != null) {
-     triangle.getSegment3().getTrigauche().calculProjete(triangle.getSegment3(), bassinVersant);
-     }
-
-     }
-     }
-
-     if (points.get(triangle.getPoint2()).equals(this)) {
-     if (triangle.getPoint1().getPosz() >= this.getPosz()) {
-
-     if (triangle.getSegment1().getTridroit() != null) {
-     triangle.getSegment1().getTridroit().calculProjete(triangle.getSegment1(), bassinVersant);
-     }
-     if (triangle.getSegment1().getTrigauche() != null) {
-     triangle.getSegment1().getTrigauche().calculProjete(triangle.getSegment1(), bassinVersant);
-     }
-     }
-
-     if (points.get(triangle.getPoint3()).getPosz() >= this.getPosz()) {
-     if (triangle.getSegment2().getTridroit() != null) {
-     triangle.getSegment2().getTridroit().calculProjete(triangle.getSegment2(), bassinVersant);
-     }
-     if (triangle.getSegment2().getTrigauche() != null) {
-     triangle.getSegment2().getTrigauche().calculProjete(triangle.getSegment2(), bassinVersant);
-     }
-
-     }
-     }
-
-     if (points.get(triangle.getPoint3()).equals(this)) {
-     if (triangle.getPoint3().equals(this)) {
-     if (triangle.getPoint2().getPosz() >= this.getPosz()) {
-
-     if (triangle.getSegment2().getTridroit() != null) {
-     triangle.getSegment2().getTridroit().calculProjete(triangle.getSegment2(), bassinVersant);
-     }
-     if (triangle.getSegment2().getTrigauche() != null) {
-     triangle.getSegment2().getTrigauche().calculProjete(triangle.getSegment2(), bassinVersant);
-     }
-     }
-
-     if (points.get(triangle.getPoint1()).getPosz() >= this.getPosz()) {
-     if (triangle.getSegment3().getTridroit() != null) {
-     triangle.getSegment3().getTridroit().calculProjete(triangle.getSegment3(), bassinVersant);
-     }
-     if (triangle.getSegment3().getTrigauche() != null) {
-     triangle.getSegment3().getTrigauche().calculProjete(triangle.getSegment3(), bassinVersant);
-     }
-
-     }
-     }
-     }
-
-     }
-     return bassinVersant;
-     }
+    /**
+     * This function is the trigger to the calcul of the watershed if the layout
+     * of the datas is respected
+     *
+     * @param triangles
+     * @param segments
+     * @param points
+     * @param watershed
+     * @throws WatershedError
      */
+    public void initialisation(ArrayList<WTriangle> triangles, ArrayList<WEdge> segments, ArrayList<WPoint> points, ArrayList<WTriangle> watershed) throws WatershedError {
+
+        int depart = -1;
+        int pos = 0;
+        for (WPoint point : points) {
+            if (this.equals(point)) {
+                depart = pos;
+            }
+            pos++;
+        }
+        if (depart == -1) {
+            throw new WatershedError(WatershedError.WATERSHED_ERROR_POINT_NOT_FOUND);
+        }
+
+        for (WEdge segment : segments) {
+
+            if (segment.getPoint1() == depart) {
+                points.get(segment.getPoint1()).setStarted(true);
+
+                double direction = (new Vecteur(points.get(segment.getPoint1()), points.get(segment.getPoint2())).calculAngle());
+
+                if (points.get(segment.getPoint1()).getPosz() < points.get(segment.getPoint2()).getPosz()) {
+                    if (segment.getTridroit() >= 0) {
+                        double penteDroit = triangles.get(segment.getTridroit()).calculPente(points).calculAngle();
+                        if (Vecteur.distAngle(direction, penteDroit) <= Math.PI) {
+                            triangles.get(segment.getTridroit()).calculProjete(segments.indexOf(segment), triangles, segments, points, watershed);
+
+                        }
+                        
+                    }
+                    if (segment.getTrigauche() >= 0) {
+                        double penteGauche = triangles.get(segment.getTridroit()).calculPente(points).calculAngle();
+                        if (Vecteur.distAngle(direction, penteGauche) <= Math.PI) {
+                            triangles.get(segment.getTrigauche()).calculProjete(segments.indexOf(segment), triangles, segments, points, watershed);
+
+                        }
+                        
+                    }
+
+                }
+                if (points.get(segment.getPoint1()).getPosz() == points.get(segment.getPoint2()).getPosz() && !points.get(segment.getPoint2()).isStarted()) {
+                    points.get(segment.getPoint2()).initialisation(triangles, segments, points, watershed);
+                }
+
+            }
+            
+            if (segment.getPoint2() == depart) {
+                points.get(segment.getPoint2()).setStarted(true);
+
+                double direction = (new Vecteur(points.get(segment.getPoint1()), points.get(segment.getPoint2())).calculAngle());
+
+                if (points.get(segment.getPoint2()).getPosz() < points.get(segment.getPoint1()).getPosz()) {
+                    if (segment.getTridroit() >= 0) {
+                        double penteDroit = triangles.get(segment.getTridroit()).calculPente(points).calculAngle();
+                        if (Vecteur.distAngle(direction, penteDroit) <= Math.PI) {
+                            triangles.get(segment.getTridroit()).calculProjete(segments.indexOf(segment), triangles, segments, points, watershed);
+
+                        }
+                      
+                    }
+                    if (segment.getTrigauche() >= 0) {
+                        double penteGauche = triangles.get(segment.getTrigauche()).calculPente(points).calculAngle();
+                        if (Vecteur.distAngle(direction, penteGauche) <= Math.PI) {
+                            triangles.get(segment.getTridroit()).calculProjete(segments.indexOf(segment), triangles, segments, points, watershed);
+
+                        }
+                      
+                    }
+
+                }
+                if (points.get(segment.getPoint2()).getPosz() == points.get(segment.getPoint1()).getPosz() && !points.get(segment.getPoint1()).isStarted()) {
+                    points.get(segment.getPoint1()).initialisation(triangles, segments, points, watershed);
+                }
+
+            }
+
+        }
+    }
 }

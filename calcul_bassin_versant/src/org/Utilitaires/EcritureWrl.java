@@ -1,7 +1,11 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+/**
+ * Watershed is a library dedicated to the processing of watershed in a 2.5
+ * triangulation of Delaunay
+ *
+ * This library is developed at Ecole Centrales de Nantes as part of a practical
+ * project.
+ *
+ * Watershed is a free software: you can redistribute it and/or modify it.
  */
 
 package org.Utilitaires;
@@ -22,8 +26,9 @@ import org.geometry.WPoint;
 import org.geometry.WTriangle;
 
 /**
- *
- * @author Antoine
+ * Used in the translation of a watershed into a wrl file
+ * @author Guillaume Vedeau
+ * @author Antoine Rigoureau
  */
 public class EcritureWrl {
     
@@ -39,7 +44,7 @@ public class EcritureWrl {
      * @param s
      * @param listeTriangle 
      */
-    public EcritureWrl(String s,ArrayList<WTriangle> listeTriangle,ArrayList<WPoint> listePoints){
+    public EcritureWrl(String s, ArrayList<WTriangle> listeTriangle, ArrayList<WPoint> listePoints){
         source=s;
         this.listeTriangle=listeTriangle;
         this.listePoints=listePoints;

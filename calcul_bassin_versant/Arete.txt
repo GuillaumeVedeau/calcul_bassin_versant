@@ -76,7 +76,7 @@ coordIndex [
 #triangle 12
 11	3	12	-1
 #triangle 13
-12	2	4	-1
+12	4	4	-1
 
 ] # end coordIndex
 

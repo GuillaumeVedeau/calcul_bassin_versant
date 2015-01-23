@@ -1,8 +1,10 @@
 /**
- * Watershed is a library dedicated to the processing of watershed in a 2.5 triangulation of Delaunay
- * 
- * This library is developed at Ecole Centrales de Nantes as part of a practical project.
- * 
+ * Watershed is a library dedicated to the processing of watershed in a 2.5
+ * triangulation of Delaunay
+ *
+ * This library is developed at Ecole Centrales de Nantes as part of a practical
+ * project.
+ *
  * Watershed is a free software: you can redistribute it and/or modify it.
  */
 package org.geometry;
@@ -15,10 +17,11 @@ import org.watershed.error.WatershedError;
  *
  * A WEdge is linked to up to two WTriangle : one on its left, and one on its
  * right. This WEdge is an edge of these WTriangle. The left and right sides are
- * relative to the orientation of the edge.  *
+ * relative to the orientation of the edge. *
  *
  *
- * @author Utilisateur
+ * @author Antoine Rigoureau
+ * @author Guillaume Vedeau
  */
 public class WEdge {
 
@@ -29,6 +32,7 @@ public class WEdge {
     //an Wedge is considered to be treated if it the method 
     private boolean traiteDroit;
     private boolean traiteGauche;
+    private boolean disparu = false;
 
     /**
      * classic constructor
@@ -50,7 +54,7 @@ public class WEdge {
      *
      * @param point1 index of the first WPoint
      * @param point2 index of the second WPoint
-     * @param tridroit index of the  WTriangle on the right
+     * @param tridroit index of the WTriangle on the right
      * @param trigauche index of the WTriangle on the left
      */
     public WEdge(int point1, int point2, int tridroit, int trigauche) {
@@ -66,8 +70,8 @@ public class WEdge {
      * Default constructor
      */
     public WEdge() {
-        this.point1 = 0;
-        this.point2 = 0;
+        this.point1 = -1;
+        this.point2 = -1;
         this.tridroit = -1;
         this.trigauche = -1;
         this.traiteDroit = false;
@@ -80,8 +84,8 @@ public class WEdge {
     }
 
     /**
-     * Compares the specified WEdge with this WEdge for equality. 
-     * Returns true if all their elements are egals
+     * Compares the specified WEdge with this WEdge for equality. Returns true
+     * if all their elements are egals
      *
      *
      * @param segment
@@ -218,6 +222,24 @@ public class WEdge {
     }
 
     /**
+     * Get the value of disparu
+     *
+     * @return the value of disparu
+     */
+    public boolean isDisparu() {
+        return disparu;
+    }
+
+    /**
+     * Set the value of disparu
+     *
+     * @param disparu new value of disparu
+     */
+    public void setDisparu(boolean disparu) {
+        this.disparu = disparu;
+    }
+
+    /**
      * cherche et complete trigauche et tridroit du segment selon une liste de
      * triangle donné, et met à jour les triangle concernés
      *
@@ -280,281 +302,282 @@ public class WEdge {
      */
     public void decoupe(int pointPos, int bassin, int passant, ArrayList<WTriangle> bassinVersant, ArrayList<WPoint> points, ArrayList<WEdge> segments, ArrayList<WTriangle> triangles) throws WatershedError {
 
-        int pointExtGauche = -1, pointExtDroit = -1;
-        int seg1 = -1, seg2 = -1;
-        int segDroitExt1 = -1, segGaucheExt1 = -1, segDroitExt2 = -1, segGaucheExt2 = -1, segDroitMid = -1, segGaucheMid = -1;
-        int triDroit1 = -1, triDroit2 = -1, triGauche1 = -1, triGauche2 = -1;
+        if (!this.isDisparu()) {
+            this.setDisparu(true);
+            int pointExtGauche = -1, pointExtDroit = -1;
+            int seg1 = -1, seg2 = -1;
+            int segDroitExt1 = -1, segGaucheExt1 = -1, segDroitExt2 = -1, segGaucheExt2 = -1, segDroitMid = -1, segGaucheMid = -1;
+            int triDroit1 = -1, triDroit2 = -1, triGauche1 = -1, triGauche2 = -1;
 
-        seg1 = segments.size();
-        segments.add(new WEdge(this.getPoint2(), pointPos));
-        seg2 = segments.size();
-        segments.add(new WEdge(pointPos, this.getPoint1()));
-        
-        // découpe du 1er triangle  juxtaposé (droit)
-        if (this.getTridroit() >= 0) {
-            if ((triangles.get(this.getTridroit()).getPoint1() == this.getPoint2() && triangles.get(this.getTridroit()).getPoint2() == this.getPoint1())
-                    || (triangles.get(this.getTridroit()).getPoint1() == this.getPoint1() && triangles.get(this.getTridroit()).getPoint2() == this.getPoint2())) {
-                pointExtDroit = triangles.get(this.getTridroit()).getPoint3();
-                segDroitExt1 = triangles.get(this.getTridroit()).getSegment3();
-                segDroitExt2 = triangles.get(this.getTridroit()).getSegment2();
+            seg1 = segments.size();
+            segments.add(new WEdge(this.getPoint2(), pointPos));
+            seg2 = segments.size();
+            segments.add(new WEdge(pointPos, this.getPoint1()));
+
+            // découpe du 1er triangle  juxtaposé (droit)
+            if (this.getTridroit() >= 0) {
+
+                if ((triangles.get(this.getTridroit()).getPoint1() == this.getPoint2() && triangles.get(this.getTridroit()).getPoint2() == this.getPoint1())
+                        || (triangles.get(this.getTridroit()).getPoint1() == this.getPoint1() && triangles.get(this.getTridroit()).getPoint2() == this.getPoint2())) {
+                    pointExtDroit = triangles.get(this.getTridroit()).getPoint3();
+                    segDroitExt1 = triangles.get(this.getTridroit()).getSegment3();
+                    segDroitExt2 = triangles.get(this.getTridroit()).getSegment2();
+                }
+
+                if ((triangles.get(this.getTridroit()).getPoint2() == this.getPoint2() || triangles.get(this.getTridroit()).getPoint3() == this.getPoint1())
+                        || (triangles.get(this.getTridroit()).getPoint2() == this.getPoint1() || triangles.get(this.getTridroit()).getPoint3() == this.getPoint2())) {
+                    pointExtDroit = triangles.get(this.getTridroit()).getPoint1();
+                    segDroitExt1 = triangles.get(this.getTridroit()).getSegment1();
+                    segDroitExt2 = triangles.get(this.getTridroit()).getSegment3();
+
+                }
+                if ((triangles.get(this.getTridroit()).getPoint3() == this.getPoint2() || triangles.get(this.getTridroit()).getPoint1() == this.getPoint1())
+                        || (triangles.get(this.getTridroit()).getPoint3() == this.getPoint1() || triangles.get(this.getTridroit()).getPoint1() == this.getPoint2())) {
+                    pointExtDroit = triangles.get(this.getTridroit()).getPoint2();
+                    segDroitExt1 = triangles.get(this.getTridroit()).getSegment2();
+                    segDroitExt2 = triangles.get(this.getTridroit()).getSegment1();
+
+                }
+
+                segDroitMid = segments.size();
+                segments.add(new WEdge(pointPos, pointExtDroit));
+
+                triDroit1 = triangles.size();
+                triangles.add(new WTriangle(seg1, segDroitMid, segDroitExt1, segments, points));
+
+                triDroit2 = triangles.size();
+                triangles.add(new WTriangle(segDroitExt2, segDroitMid, seg2, segments, points));
+
+                //ajoute les 2 nouveaux triangles au nouveau segment qui les sépare
+                segments.get(segDroitMid).setTridroit(triDroit2);
+                segments.get(segDroitMid).setTrigauche(triDroit1);
+
+                // modifie les segment extérieurs pour qu'ils prennent en compte les 2 nouveaux triangles
+                if (this.getTridroit() == segments.get(segDroitExt2).getTridroit()) {
+                    segments.get(segDroitExt2).setTridroit(triDroit1);
+                } else {
+                    segments.get(segDroitExt2).setTrigauche(triDroit1);
+
+                }
+
+                if (this.getTridroit() == segments.get(segDroitExt1).getTridroit()) {
+                    segments.get(segDroitExt1).setTridroit(triDroit2);
+                } else {
+                    segments.get(segDroitExt1).setTrigauche(triDroit2);
+                }
+
             }
 
-            if ((triangles.get(this.getTridroit()).getPoint2() == this.getPoint2() || triangles.get(this.getTridroit()).getPoint3() == this.getPoint1())
-                    || (triangles.get(this.getTridroit()).getPoint2() == this.getPoint1() || triangles.get(this.getTridroit()).getPoint3() == this.getPoint2())) {
-                pointExtDroit = triangles.get(this.getTridroit()).getPoint1();
-                segDroitExt1 = triangles.get(this.getTridroit()).getSegment1();
-                segDroitExt2 = triangles.get(this.getTridroit()).getSegment3();
+            // découpe du 2eme triangle  juxtaposé
+            if (this.getTrigauche() >= 0) {
+                if ((triangles.get(this.getTrigauche()).getPoint1() == this.getPoint1() && triangles.get(this.getTrigauche()).getPoint2() == this.getPoint2())
+                        || (triangles.get(this.getTrigauche()).getPoint1() == this.getPoint2() && triangles.get(this.getTrigauche()).getPoint2() == this.getPoint1())) {
+                    pointExtGauche = triangles.get(this.getTrigauche()).getPoint3();
+                    segGaucheExt1 = triangles.get(this.getTrigauche()).getSegment3();
+                    segGaucheExt2 = triangles.get(this.getTrigauche()).getSegment2();
+                }
+                if ((triangles.get(this.getTrigauche()).getPoint2() == this.getPoint1() && triangles.get(this.getTrigauche()).getPoint3() == this.getPoint2())
+                        || (triangles.get(this.getTrigauche()).getPoint2() == this.getPoint2() && triangles.get(this.getTrigauche()).getPoint3() == this.getPoint1())) {
+                    pointExtGauche = triangles.get(this.getTrigauche()).getPoint1();
+                    segGaucheExt1 = triangles.get(this.getTrigauche()).getSegment1();
+                    segGaucheExt2 = triangles.get(this.getTrigauche()).getSegment3();
+
+                }
+                if ((triangles.get(this.getTrigauche()).getPoint3() == this.getPoint1() && triangles.get(this.getTrigauche()).getPoint1() == this.getPoint2())
+                        || (triangles.get(this.getTrigauche()).getPoint3() == this.getPoint2() && triangles.get(this.getTrigauche()).getPoint1() == this.getPoint1())) {
+                    pointExtGauche = triangles.get(this.getTrigauche()).getPoint2();
+                    segGaucheExt1 = triangles.get(this.getTrigauche()).getSegment2();
+                    segGaucheExt2 = triangles.get(this.getTrigauche()).getSegment1();
+
+                }
+                System.out.println(this + "   " + segments.indexOf(this) + triangles.get(this.getTrigauche()) + "  " + this.getTrigauche() + " yop ");
+                segGaucheMid = segments.size();
+                segments.add(new WEdge(pointPos, pointExtGauche));
+
+                triGauche1 = triangles.size();
+                triangles.add(new WTriangle(seg2, segGaucheMid, segGaucheExt1, segments, points));
+                triGauche2 = triangles.size();
+                triangles.add(new WTriangle(segGaucheExt2, segGaucheMid, seg1, segments, points));
+
+                //add 2 news WTriangle to the 
+                segments.get(segGaucheMid).setTridroit(triGauche2);
+                segments.get(segGaucheMid).setTrigauche(triGauche1);
+
+                // modifie les segment extérieurs pour qu'ils prennent en compte les 2 nouveaux triangles
+                if (this.getTrigauche() == segments.get(segGaucheExt1).getTridroit()) {
+                    segments.get(segGaucheExt1).setTridroit(triGauche1);
+                } else {
+                    segments.get(segGaucheExt1).setTrigauche(triGauche1);
+
+                }
+
+                if (this.getTrigauche() == segments.get(segGaucheExt2).getTridroit()) {
+                    segments.get(segGaucheExt2).setTridroit(triGauche2);
+                } else {
+                    segments.get(segGaucheExt2).setTrigauche(triGauche2);
+                }
+            }
+
+            // ajout des 4 triangles créés aux 2 segments séparant les 2 anciens triangles
+            if (this.getTridroit() >= 0) {
+                segments.get(seg2).setTrigauche(triDroit2);
+                segments.get(seg1).setTrigauche(triDroit1);
+            }
+            if (this.getTrigauche() >= 0) {
+                segments.get(seg2).setTridroit(triGauche1);
+                segments.get(seg1).setTridroit(triGauche2);
+            }
+
+            // Ajout du triangle correspondant au bassin versant et propagation du bassin (cas où le triangle qui a provoqué la séparation était le triangle droit du segment actuel)
+            if ((bassin == this.getTridroit())) {
+
+                if (triangles.get(triDroit1).getPoint1() == passant || triangles.get(triDroit1).getPoint2() == passant || triangles.get(triDroit1).getPoint3() == passant) {
+                    bassinVersant.add(triangles.get(triDroit1));
+                    if (triDroit1 == segments.get(triangles.get(triDroit1).getSegment1()).getTridroit()) {
+                        if (segments.get(triangles.get(triDroit1).getSegment1()).getTrigauche() >= 0) {
+                            triangles.get(segments.get(triangles.get(triDroit1).getSegment1()).getTrigauche()).calculProjete(triangles.get(triDroit1).getSegment1(), triangles, segments, points, bassinVersant);
+                        }
+                    } else {
+                        if (segments.get(triangles.get(triDroit1).getSegment1()).getTridroit() >= 0) {
+                            triangles.get(segments.get(triangles.get(triDroit1).getSegment1()).getTridroit()).calculProjete(triangles.get(triDroit1).getSegment1(), triangles, segments, points, bassinVersant);
+                        }
+                    }
+
+                    if (triDroit1 == segments.get(triangles.get(triDroit1).getSegment2()).getTridroit()) {
+                        if (segments.get(triangles.get(triDroit1).getSegment2()).getTrigauche() >= 0) {
+                            triangles.get(segments.get(triangles.get(triDroit1).getSegment2()).getTrigauche()).calculProjete(triangles.get(triDroit1).getSegment2(), triangles, segments, points, bassinVersant);
+                        }
+                    } else {
+                        if (segments.get(triangles.get(triDroit1).getSegment2()).getTridroit() >= 0) {
+                            triangles.get(segments.get(triangles.get(triDroit1).getSegment2()).getTridroit()).calculProjete(triangles.get(triDroit1).getSegment2(), triangles, segments, points, bassinVersant);
+                        }
+                    }
+
+                    if (triDroit1 == segments.get(triangles.get(triDroit1).getSegment3()).getTridroit()) {
+                        if (segments.get(triangles.get(triDroit1).getSegment3()).getTrigauche() >= 0) {
+                            triangles.get(segments.get(triangles.get(triDroit1).getSegment3()).getTrigauche()).calculProjete(triangles.get(triDroit1).getSegment3(), triangles, segments, points, bassinVersant);
+                        }
+                    } else {
+                        if (segments.get(triangles.get(triDroit1).getSegment3()).getTridroit() >= 0) {
+                            triangles.get(segments.get(triangles.get(triDroit1).getSegment3()).getTridroit()).calculProjete(triangles.get(triDroit1).getSegment3(), triangles, segments, points, bassinVersant);
+                        }
+                    }
+
+                } else {
+                    bassinVersant.add(triangles.get(triDroit2));
+                    if (triDroit2 == segments.get(triangles.get(triDroit2).getSegment1()).getTridroit()) {
+                        if (segments.get(triangles.get(triDroit2).getSegment1()).getTrigauche() >= 0) {
+                            triangles.get(segments.get(triangles.get(triDroit2).getSegment1()).getTrigauche()).calculProjete(triangles.get(triDroit2).getSegment1(), triangles, segments, points, bassinVersant);
+                        }
+                    } else {
+                        if (segments.get(triangles.get(triDroit2).getSegment1()).getTridroit() >= 0) {
+                            triangles.get(segments.get(triangles.get(triDroit2).getSegment1()).getTridroit()).calculProjete(triangles.get(triDroit2).getSegment1(), triangles, segments, points, bassinVersant);
+                        }
+                    }
+
+                    if (triDroit2 == segments.get(triangles.get(triDroit2).getSegment2()).getTridroit()) {
+                        if (segments.get(triangles.get(triDroit2).getSegment2()).getTrigauche() >= 0) {
+                            triangles.get(segments.get(triangles.get(triDroit2).getSegment2()).getTrigauche()).calculProjete(triangles.get(triDroit2).getSegment2(), triangles, segments, points, bassinVersant);
+                        }
+                    } else {
+                        if (segments.get(triangles.get(triDroit2).getSegment2()).getTridroit() >= 0) {
+                            triangles.get(segments.get(triangles.get(triDroit2).getSegment2()).getTridroit()).calculProjete(triangles.get(triDroit2).getSegment2(), triangles, segments, points, bassinVersant);
+                        }
+                    }
+
+                    if (triDroit2 == segments.get(triangles.get(triDroit2).getSegment3()).getTridroit()) {
+                        if (segments.get(triangles.get(triDroit2).getSegment3()).getTrigauche() >= 0) {
+                            triangles.get(segments.get(triangles.get(triDroit2).getSegment3()).getTrigauche()).calculProjete(triangles.get(triDroit2).getSegment3(), triangles, segments, points, bassinVersant);
+                        }
+                    } else {
+                        if (segments.get(triangles.get(triDroit2).getSegment3()).getTridroit() >= 0) {
+                            triangles.get(segments.get(triangles.get(triDroit2).getSegment3()).getTridroit()).calculProjete(triangles.get(triDroit2).getSegment3(), triangles, segments, points, bassinVersant);
+                        }
+                    }
+                }
+            }
+
+            // Ajout du triangle correspondant au bassin versant et propagation du bassin (cas où le triangle qui a provoqué la séparation était le triangle gauche du segment actuel)
+            if (bassin == this.getTrigauche()) {
+
+                if (triangles.get(triGauche1).getPoint1() == passant || triangles.get(triGauche1).getPoint2() == passant || triangles.get(triGauche1).getPoint3() == passant) {
+                    bassinVersant.add(triangles.get(triGauche1));
+
+                    if (segments.get(triangles.get(triGauche1).getSegment1()).getTridroit() == triGauche1) {
+
+                        if (segments.get(triangles.get(triGauche1).getSegment1()).getTrigauche() >= 0) {
+                            triangles.get(segments.get(triangles.get(triGauche1).getSegment1()).getTrigauche()).calculProjete(triangles.get(triGauche1).getSegment1(), triangles, segments, points, bassinVersant);
+                        }
+                    } else {
+
+                        if (segments.get(triangles.get(triGauche1).getSegment1()).getTridroit() >= 0) {
+                            triangles.get(segments.get(triangles.get(triGauche1).getSegment1()).getTridroit()).calculProjete(triangles.get(triGauche1).getSegment1(), triangles, segments, points, bassinVersant);
+                        }
+                    }
+
+                    if (segments.get(triangles.get(triGauche1).getSegment2()).getTridroit() == triGauche1) {
+
+                        if (segments.get(triangles.get(triGauche1).getSegment2()).getTrigauche() >= 0) {
+                            triangles.get(segments.get(triangles.get(triGauche1).getSegment2()).getTrigauche()).calculProjete(triangles.get(triGauche1).getSegment2(), triangles, segments, points, bassinVersant);
+                        }
+                    } else {
+
+                        if (segments.get(triangles.get(triGauche1).getSegment2()).getTridroit() >= 0) {
+                            triangles.get(segments.get(triangles.get(triGauche1).getSegment2()).getTridroit()).calculProjete(triangles.get(triGauche1).getSegment2(), triangles, segments, points, bassinVersant);
+                        }
+                    }
+
+                    if (segments.get(triangles.get(triGauche1).getSegment3()).getTridroit() == triGauche1) {
+
+                        if (segments.get(triangles.get(triGauche1).getSegment3()).getTrigauche() >= 0) {
+                            triangles.get(segments.get(triangles.get(triGauche1).getSegment3()).getTrigauche()).calculProjete(triangles.get(triGauche1).getSegment3(), triangles, segments, points, bassinVersant);
+                        }
+                    } else {
+
+                        if (segments.get(triangles.get(triGauche1).getSegment3()).getTridroit() >= 0) {
+                            triangles.get(segments.get(triangles.get(triGauche1).getSegment3()).getTridroit()).calculProjete(triangles.get(triGauche1).getSegment3(), triangles, segments, points, bassinVersant);
+                        }
+                    }
+
+                } else {
+                    bassinVersant.add(triangles.get(triGauche2));
+                    if (triGauche2 == segments.get(triangles.get(triGauche2).getSegment1()).getTridroit()) {
+
+                        if (segments.get(triangles.get(triGauche2).getSegment1()).getTrigauche() >= 0) {
+                            triangles.get(segments.get(triangles.get(triGauche2).getSegment1()).getTrigauche()).calculProjete(triangles.get(triGauche2).getSegment1(), triangles, segments, points, bassinVersant);
+                        }
+                    } else {
+
+                        if (segments.get(triangles.get(triGauche2).getSegment1()).getTridroit() >= 0) {
+                            triangles.get(segments.get(triangles.get(triGauche2).getSegment1()).getTridroit()).calculProjete(triangles.get(triGauche2).getSegment1(), triangles, segments, points, bassinVersant);
+                        }
+                    }
+
+                    if (triGauche2 == segments.get(triangles.get(triGauche2).getSegment2()).getTridroit()) {
+
+                        if (segments.get(triangles.get(triGauche2).getSegment2()).getTrigauche() >= 0) {
+                            triangles.get(segments.get(triangles.get(triGauche2).getSegment2()).getTrigauche()).calculProjete(triangles.get(triGauche2).getSegment2(), triangles, segments, points, bassinVersant);
+                        }
+                    } else {
+
+                        if (segments.get(triangles.get(triGauche2).getSegment2()).getTridroit() >= 0) {
+                            triangles.get(segments.get(triangles.get(triGauche2).getSegment2()).getTridroit()).calculProjete(triangles.get(triGauche2).getSegment2(), triangles, segments, points, bassinVersant);
+                        }
+                    }
+                    if (triGauche2 == segments.get(triangles.get(triGauche2).getSegment3()).getTridroit()) {
+
+                        if (segments.get(triangles.get(triGauche1).getSegment3()).getTrigauche() >= 0) {
+                            triangles.get(segments.get(triangles.get(triGauche2).getSegment3()).getTrigauche()).calculProjete(triangles.get(triGauche2).getSegment3(), triangles, segments, points, bassinVersant);
+                        }
+                    } else {
+
+                        if (segments.get(triangles.get(triGauche2).getSegment3()).getTridroit() >= 0) {
+                            triangles.get(segments.get(triangles.get(triGauche2).getSegment3()).getTridroit()).calculProjete(triangles.get(triGauche2).getSegment3(), triangles, segments, points, bassinVersant);
+                        }
+                    }
+                }
 
             }
-            if ((triangles.get(this.getTridroit()).getPoint3() == this.getPoint2() || triangles.get(this.getTridroit()).getPoint1() == this.getPoint1())
-                    || (triangles.get(this.getTridroit()).getPoint3() == this.getPoint1() || triangles.get(this.getTridroit()).getPoint1() == this.getPoint2())) {
-                pointExtDroit = triangles.get(this.getTridroit()).getPoint2();
-                segDroitExt1 = triangles.get(this.getTridroit()).getSegment2();
-                segDroitExt2 = triangles.get(this.getTridroit()).getSegment1();
-
-            }
-
-            segDroitMid = segments.size();
-            segments.add(new WEdge(pointPos, pointExtDroit));
-
-            triDroit1 = triangles.size();
-            triangles.add(new WTriangle(seg1, segDroitMid, segDroitExt1, segments, points));
-
-            triDroit2 = triangles.size();
-            triangles.add(new WTriangle(segDroitExt2, segDroitMid, seg2, segments, points));
-
-            //ajoute les 2 nouveaux triangles au nouveau segment qui les sépare
-            segments.get(segDroitMid).setTridroit(triDroit1);
-            segments.get(segDroitMid).setTrigauche(triDroit2);
-
-            // modifie les segment extérieurs pour qu'ils prennent en compte les 2 nouveaux triangles
-            
-            if (this.getTridroit() == segments.get(segDroitExt1).getTridroit()) {
-                segments.get(segDroitExt1).setTridroit(triDroit1);
-            } else {
-                segments.get(segDroitExt1).setTrigauche(triDroit1);
-
-            }
-
-            if (this.getTridroit() == segments.get(segDroitExt2).getTridroit()) {
-                segments.get(segDroitExt2).setTridroit(triDroit2);
-            } else {
-                segments.get(segDroitExt2).setTrigauche(triDroit2);
-            }
-
         }
-
-        // découpe du 2eme triangle  juxtaposé
-        if (this.getTrigauche() > 0) {
-            if ((triangles.get(this.getTrigauche()).getPoint1() == this.getPoint1() && triangles.get(this.getTrigauche()).getPoint2() == this.getPoint2())
-                    || (triangles.get(this.getTrigauche()).getPoint1() == this.getPoint2() && triangles.get(this.getTrigauche()).getPoint2() == this.getPoint1())) {
-                pointExtGauche = triangles.get(this.getTrigauche()).getPoint3();
-                segGaucheExt1 = triangles.get(this.getTrigauche()).getSegment3();
-                segGaucheExt2 = triangles.get(this.getTrigauche()).getSegment2();
-            }
-            if ((triangles.get(this.getTrigauche()).getPoint2() == this.getPoint1() && triangles.get(this.getTrigauche()).getPoint3() == this.getPoint2())
-                    || (triangles.get(this.getTrigauche()).getPoint2() == this.getPoint2() && triangles.get(this.getTrigauche()).getPoint3() == this.getPoint1())) {
-                pointExtGauche = triangles.get(this.getTrigauche()).getPoint1();
-                segGaucheExt1 = triangles.get(this.getTrigauche()).getSegment1();
-                segGaucheExt2 = triangles.get(this.getTrigauche()).getSegment3();
-
-            }
-            if ((triangles.get(this.getTrigauche()).getPoint1() == this.getPoint1() && triangles.get(this.getTrigauche()).getPoint3() == this.getPoint2())
-                    || (triangles.get(this.getTrigauche()).getPoint1() == this.getPoint2() && triangles.get(this.getTrigauche()).getPoint3() == this.getPoint1())) {
-                pointExtGauche = triangles.get(this.getTrigauche()).getPoint2();
-                segGaucheExt1 = triangles.get(this.getTrigauche()).getSegment2();
-                segGaucheExt2 = triangles.get(this.getTrigauche()).getSegment1();
-
-            }
-
-            segGaucheMid = segments.size();
-            segments.add(new WEdge(pointPos, pointExtGauche));
-
-            triGauche1 = triangles.size();
-            triangles.add(new WTriangle(seg2, segGaucheMid, segGaucheExt1, segments, points));
-            triGauche2 = triangles.size();
-            triangles.add(new WTriangle(segGaucheExt2, segGaucheMid, seg1, segments, points));
-
-            //add 2 news WTriangle to the 
-            segments.get(segGaucheMid).setTridroit(triGauche1);
-            segments.get(segGaucheMid).setTrigauche(triGauche2);
-
-            // modifie les segment extérieurs pour qu'ils prennent en compte les 2 nouveaux triangles
-            if (this.getTrigauche() == segments.get(segGaucheExt1).getTridroit()) {
-                segments.get(segGaucheExt1).setTridroit(triGauche1);
-            } else {
-                segments.get(segGaucheExt1).setTrigauche(triGauche1);
-
-            }
-
-            if (this.getTrigauche() == segments.get(segGaucheExt2).getTridroit()) {
-                segments.get(segGaucheExt2).setTridroit(triGauche2);
-            } else {
-                segments.get(segGaucheExt2).setTrigauche(triGauche2);
-            }
-
-        }
-
-        // ajout des 4 triangles créés aux 2 segments séparant les 2 anciens triangles
-        if (this.getTridroit() > 0) {
-            segments.get(seg2).setTridroit(triDroit2);
-            segments.get(seg1).setTridroit(triDroit1);
-        }
-        if (this.getTrigauche() > 0) {
-            segments.get(seg2).setTrigauche(triGauche1);
-            segments.get(seg1).setTrigauche(triGauche2);
-        }
-
-        // Ajout du triangle correspondant au bassin versant et propagation du bassin (cas où le triangle qui a provoqué la séparation était le triangle droit du segment actuel)
-        if ((bassin == this.getTridroit())) {
-
-            if (triangles.get(triDroit1).getPoint1() == passant || triangles.get(triDroit1).getPoint2() == passant || triangles.get(triDroit1).getPoint3() == passant) {
-                bassinVersant.add(triangles.get(triDroit1));
-                if (triDroit1 == segments.get(triangles.get(triDroit1).getSegment1()).getTridroit()) {
-                    if (segments.get(triangles.get(triDroit1).getSegment1()).getTrigauche() > 0) {
-                        triangles.get(segments.get(triangles.get(triDroit1).getSegment1()).getTrigauche()).calculProjete(triangles.get(triDroit1).getSegment1(), triangles, segments, points, bassinVersant);
-                    }
-                } else {
-                    if (segments.get(triangles.get(triDroit1).getSegment1()).getTridroit() > 0) {
-                        triangles.get(segments.get(triangles.get(triDroit1).getSegment1()).getTridroit()).calculProjete(triangles.get(triDroit1).getSegment1(), triangles, segments, points, bassinVersant);
-                    }
-                }
-
-                if (triDroit1 == segments.get(triangles.get(triDroit1).getSegment2()).getTridroit()) {
-                    if (segments.get(triangles.get(triDroit1).getSegment2()).getTrigauche() > 0) {
-                        triangles.get(segments.get(triangles.get(triDroit1).getSegment2()).getTrigauche()).calculProjete(triangles.get(triDroit1).getSegment2(), triangles, segments, points, bassinVersant);
-                    }
-                } else {
-                    if (segments.get(triangles.get(triDroit1).getSegment2()).getTridroit() > 0) {
-                        triangles.get(segments.get(triangles.get(triDroit1).getSegment2()).getTridroit()).calculProjete(triangles.get(triDroit1).getSegment2(), triangles, segments, points, bassinVersant);
-                    }
-                }
-
-                if (triDroit1 == segments.get(triangles.get(triDroit1).getSegment3()).getTridroit()) {
-                    if (segments.get(triangles.get(triDroit1).getSegment3()).getTrigauche() > 0) {
-                        triangles.get(segments.get(triangles.get(triDroit1).getSegment3()).getTrigauche()).calculProjete(triangles.get(triDroit1).getSegment3(), triangles, segments, points, bassinVersant);
-                    }
-                } else {
-                    if (segments.get(triangles.get(triDroit1).getSegment3()).getTridroit() > 0) {
-                        triangles.get(segments.get(triangles.get(triDroit1).getSegment3()).getTridroit()).calculProjete(triangles.get(triDroit1).getSegment3(), triangles, segments, points, bassinVersant);
-                    }
-                }
-
-            } else {
-                bassinVersant.add(triangles.get(triDroit2));
-                if (triDroit2 == segments.get(triangles.get(triDroit2).getSegment1()).getTridroit()) {
-                    if (segments.get(triangles.get(triDroit2).getSegment1()).getTrigauche() > 0) {
-                        triangles.get(segments.get(triangles.get(triDroit2).getSegment1()).getTrigauche()).calculProjete(triangles.get(triDroit2).getSegment1(), triangles, segments, points, bassinVersant);
-                    }
-                } else {
-                    if (segments.get(triangles.get(triDroit2).getSegment1()).getTridroit() > 0) {
-                        triangles.get(segments.get(triangles.get(triDroit2).getSegment1()).getTridroit()).calculProjete(triangles.get(triDroit2).getSegment1(), triangles, segments, points, bassinVersant);
-                    }
-                }
-
-                if (triDroit2 == segments.get(triangles.get(triDroit2).getSegment2()).getTridroit()) {
-                    if (segments.get(triangles.get(triDroit2).getSegment2()).getTrigauche() > 0) {
-                        triangles.get(segments.get(triangles.get(triDroit2).getSegment2()).getTrigauche()).calculProjete(triangles.get(triDroit2).getSegment2(), triangles, segments, points, bassinVersant);
-                    }
-                } else {
-                    if (segments.get(triangles.get(triDroit2).getSegment2()).getTridroit() > 0) {
-                        triangles.get(segments.get(triangles.get(triDroit2).getSegment2()).getTridroit()).calculProjete(triangles.get(triDroit2).getSegment2(), triangles, segments, points, bassinVersant);
-                    }
-                }
-
-                if (triDroit2 == segments.get(triangles.get(triDroit2).getSegment3()).getTridroit()) {
-                    if (segments.get(triangles.get(triDroit2).getSegment3()).getTrigauche() > 0) {
-                        triangles.get(segments.get(triangles.get(triDroit2).getSegment3()).getTrigauche()).calculProjete(triangles.get(triDroit2).getSegment3(), triangles, segments, points, bassinVersant);
-                    }
-                } else {
-                    if (segments.get(triangles.get(triDroit2).getSegment3()).getTridroit() > 0) {
-                        triangles.get(segments.get(triangles.get(triDroit2).getSegment3()).getTridroit()).calculProjete(triangles.get(triDroit2).getSegment3(), triangles, segments, points, bassinVersant);
-                    }
-                }
-            }
-        }
-
-        // Ajout du triangle correspondant au bassin versant et propagation du bassin (cas où le triangle qui a provoqué la séparation était le triangle gauche du segment actuel)
-        if (bassin == this.getTrigauche()) {
-
-            if (triangles.get(triGauche1).getPoint1() == passant || triangles.get(triGauche1).getPoint2() == passant || triangles.get(triGauche1).getPoint3() == passant) {
-                bassinVersant.add(triangles.get(triGauche1));
-
-                if (segments.get(triangles.get(triGauche1).getSegment1()).getTridroit() == triGauche1) {
-
-                    if (segments.get(triangles.get(triGauche1).getSegment1()).getTrigauche() > 0) {
-                        triangles.get(segments.get(triangles.get(triGauche1).getSegment1()).getTrigauche()).calculProjete(triangles.get(triGauche1).getSegment1(), triangles, segments, points, bassinVersant);
-                    }
-                } else {
-
-                    if (segments.get(triangles.get(triGauche1).getSegment1()).getTridroit() > 0) {
-                        triangles.get(segments.get(triangles.get(triGauche1).getSegment1()).getTridroit()).calculProjete(triangles.get(triGauche1).getSegment1(), triangles, segments, points, bassinVersant);
-                    }
-                }
-
-                if (segments.get(triangles.get(triGauche1).getSegment2()).getTridroit() == triGauche1) {
-
-                    if (segments.get(triangles.get(triGauche1).getSegment2()).getTrigauche() > 0) {
-                        triangles.get(segments.get(triangles.get(triGauche1).getSegment2()).getTrigauche()).calculProjete(triangles.get(triGauche1).getSegment2(), triangles, segments, points, bassinVersant);
-                    }
-                } else {
-
-                    if (segments.get(triangles.get(triGauche1).getSegment2()).getTridroit() > 0) {
-                        triangles.get(segments.get(triangles.get(triGauche1).getSegment2()).getTridroit()).calculProjete(triangles.get(triGauche1).getSegment2(), triangles, segments, points, bassinVersant);
-                    }
-                }
-
-                if (segments.get(triangles.get(triGauche1).getSegment3()).getTridroit() == triGauche1) {
-
-                    if (segments.get(triangles.get(triGauche1).getSegment3()).getTrigauche() > 0) {
-                        triangles.get(segments.get(triangles.get(triGauche1).getSegment3()).getTrigauche()).calculProjete(triangles.get(triGauche1).getSegment3(), triangles, segments, points, bassinVersant);
-                    }
-                } else {
-
-                    if (segments.get(triangles.get(triGauche1).getSegment3()).getTridroit() > 0) {
-                        triangles.get(segments.get(triangles.get(triGauche1).getSegment3()).getTridroit()).calculProjete(triangles.get(triGauche1).getSegment3(), triangles, segments, points, bassinVersant);
-                    }
-                }
-
-            } else {
-                bassinVersant.add(triangles.get(triGauche2));
-                if (triGauche2 == segments.get(triangles.get(triGauche2).getSegment1()).getTridroit()) {
-
-                    if (segments.get(triangles.get(triGauche2).getSegment1()).getTrigauche() > 0) {
-                        triangles.get(segments.get(triangles.get(triGauche2).getSegment1()).getTrigauche()).calculProjete(triangles.get(triGauche2).getSegment1(), triangles, segments, points, bassinVersant);
-                    }
-                } else {
-
-                    if (segments.get(triangles.get(triGauche2).getSegment1()).getTridroit() > 0) {
-                        triangles.get(segments.get(triangles.get(triGauche2).getSegment1()).getTridroit()).calculProjete(triangles.get(triGauche2).getSegment1(), triangles, segments, points, bassinVersant);
-                    }
-                }
-
-                if (triGauche2 == segments.get(triangles.get(triGauche2).getSegment2()).getTridroit()) {
-
-                    if (segments.get(triangles.get(triGauche2).getSegment2()).getTrigauche() > 0) {
-                        triangles.get(segments.get(triangles.get(triGauche2).getSegment2()).getTrigauche()).calculProjete(triangles.get(triGauche2).getSegment2(), triangles, segments, points, bassinVersant);
-                    }
-                } else {
-
-                    if (segments.get(triangles.get(triGauche2).getSegment2()).getTridroit() > 0) {
-                        triangles.get(segments.get(triangles.get(triGauche2).getSegment2()).getTridroit()).calculProjete(triangles.get(triGauche2).getSegment2(), triangles, segments, points, bassinVersant);
-                    }
-                }
-                if (triGauche2 == segments.get(triangles.get(triGauche2).getSegment3()).getTridroit()) {
-
-                    if (segments.get(triangles.get(triGauche1).getSegment3()).getTrigauche() > 0) {
-                        triangles.get(segments.get(triangles.get(triGauche2).getSegment3()).getTrigauche()).calculProjete(triangles.get(triGauche2).getSegment3(), triangles, segments, points, bassinVersant);
-                    }
-                } else {
-
-                    if (segments.get(triangles.get(triGauche2).getSegment3()).getTridroit() > 0) {
-                        triangles.get(segments.get(triangles.get(triGauche2).getSegment3()).getTridroit()).calculProjete(triangles.get(triGauche2).getSegment3(), triangles, segments, points, bassinVersant);
-                    }
-                }
-            }
-
-        }
-
     }
 }

@@ -1,8 +1,10 @@
 /**
- * Watershed is a library dedicated to the processing of watershed in a 2.5 triangulation of Delaunay
- * 
- * This library is developed at Ecole Centrales de Nantes as part of a practical project.
- * 
+ * Watershed is a library dedicated to the processing of watershed in a 2.5
+ * triangulation of Delaunay
+ *
+ * This library is developed at Ecole Centrales de Nantes as part of a practical
+ * project.
+ *
  * Watershed is a free software: you can redistribute it and/or modify it.
  */
 package org.geometry;
@@ -44,7 +46,7 @@ public class Vecteur {
     /**
      * Constructor based on WEdge using an ArrayList of WPoint
      *
-     * @param segment the 
+     * @param segment the
      * @param points
      */
     public Vecteur(WEdge segment, ArrayList<WPoint> points) {
@@ -84,7 +86,8 @@ public class Vecteur {
     /**
      * Get the value of valx
      *
-     * @return the value of valx
+     * @author Antoine Rigoureau
+     * @author Guillaume Vedeau
      */
     public double getValx() {
         return valx;
@@ -101,36 +104,39 @@ public class Vecteur {
 
     /**
      * renvoie l'angle d'un vecteur en radians
-     * @return 
+     *
+     * @return
      */
     public double calculAngle() {
         double angle = 0;
         if (this.getValx() == 0 && this.getValy() == 0) {
         } else {
             if (asin(this.getValy() / (sqrt(this.getValx() * this.getValx() + this.getValy() * this.getValy()))) >= 0) {
-                angle =  acos(this.getValx() / (sqrt(this.getValx() * this.getValx() + this.getValy() * this.getValy())));
+                angle = acos(this.getValx() / (sqrt(this.getValx() * this.getValx() + this.getValy() * this.getValy())));
             } else {
-                angle =  acos(this.getValx() / (sqrt(this.getValx() * this.getValx() + this.getValy() * this.getValy())));
-                angle =  (-angle + 2*Math.PI);
+                angle = acos(this.getValx() / (sqrt(this.getValx() * this.getValx() + this.getValy() * this.getValy())));
+                angle = (-angle + 2 * Math.PI);
             }
         }
         return angle;
     }
+
     /**
-     * calcul de la distance angulaire entre 2 angles dans le sens de rotation trigonométrique (de l'angle
+     * calcul de la distance angulaire entre 2 angles dans le sens de rotation
+     * trigonométrique (de l'angle
+     *
      * @param angle1
      * @param angle2
      * @return distance distance angulaire entre angle1 et angle2
      */
-    public static double distAngle(double angle1, double angle2){
- 
+    public static double distAngle(double angle1, double angle2) {
+
         double distance;
         distance = angle2 - angle1;
-        if(distance < 0){
-            distance = (distance + 2*Math.PI);
+        if (distance < 0) {
+            distance = (distance + 2 * Math.PI);
         }
         return distance;
-    
 
-}
+    }
 }

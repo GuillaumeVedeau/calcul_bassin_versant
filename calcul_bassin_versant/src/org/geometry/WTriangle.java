@@ -15,7 +15,8 @@ import org.watershed.error.WatershedError;
 /**
  * gere les objet de type WTriangle
  *
- * @author Utilisateur
+ * @author Antoine Rigoureau
+ * @author Guillaume Vedeau
  */
 public class WTriangle {
 
@@ -26,6 +27,7 @@ public class WTriangle {
     private int point1;
     private int point2;
     private int point3;
+    private boolean disparu = false;
     // Is used as an approximation when a opreation is done between 2 
     // its value is fixed at 1°by default
     private static double approximationAngulaire = 0.08;
@@ -224,6 +226,24 @@ public class WTriangle {
     }
 
     /**
+     * Get the value of disparu
+     *
+     * @return the value of disparu
+     */
+    public boolean isDisparu() {
+        return disparu;
+    }
+
+    /**
+     * Set the value of disparu
+     *
+     * @param disparu new value of disparu
+     */
+    public void setDisparu(boolean disparu) {
+        this.disparu = disparu;
+    }
+
+    /**
      * Build the objects WEdge needed in the program and the relations between
      * them
      *
@@ -316,8 +336,8 @@ public class WTriangle {
                     segments.add(new WEdge(triangle.getPoint3(), triangle.getPoint1(), -1, posTriangle));
                 }
             }
-        
-        posTriangle++;
+
+            posTriangle++;
         }
     }
 
@@ -393,16 +413,15 @@ public class WTriangle {
      */
     public void calculProjete(int segment, ArrayList<WTriangle> triangles, ArrayList<WEdge> segments, ArrayList<WPoint> points, ArrayList<WTriangle> bassinVersant) throws WatershedError {
 
-        System.out.println(this);
         boolean traiter = false;
 
-        if (segments.get(segment).getTridroit() >= 0) {
+        if (segments.get(segment).getTridroit() >= 0 && !this.isDisparu()) {
             if ((!segments.get(segment).gettraiteDroit()) && this.equals(triangles.get(segments.get(segment).getTridroit()))) {
                 traiter = true;
                 segments.get(segment).setTraiteDroit(true);
             }
         }
-        if (segments.get(segment).getTrigauche() >= 0) {
+        if (segments.get(segment).getTrigauche() >= 0 && !this.isDisparu()) {
             if ((!segments.get(segment).getTraiteGauche()) && (this.equals(triangles.get(segments.get(segment).getTrigauche())))) {
                 traiter = true;
                 segments.get(segment).setTraiteGauche(true);
@@ -426,6 +445,7 @@ public class WTriangle {
                     segmentAB = this.getSegment3();
                     segmentBC = this.getSegment1();
                     segmentAC = this.getSegment2();
+                    disparu = false;
                 } else {
                     pointA = this.getPoint2();
                     pointB = this.getPoint3();
@@ -433,6 +453,7 @@ public class WTriangle {
                     segmentAB = this.getSegment2();
                     segmentBC = this.getSegment3();
                     segmentAC = this.getSegment1();
+                    disparu = false;
                 }
             }
 
@@ -446,6 +467,7 @@ public class WTriangle {
                     segmentAB = this.getSegment1();
                     segmentBC = this.getSegment2();
                     segmentAC = this.getSegment3();
+                    disparu = false;
                 } else {
                     pointA = this.getPoint3();
                     pointB = this.getPoint1();
@@ -453,6 +475,7 @@ public class WTriangle {
                     segmentAB = this.getSegment3();
                     segmentBC = this.getSegment1();
                     segmentAC = this.getSegment2();
+                    disparu = false;
                 }
             }
 
@@ -466,6 +489,7 @@ public class WTriangle {
                     segmentAB = this.getSegment2();
                     segmentBC = this.getSegment3();
                     segmentAC = this.getSegment1();
+                    disparu = false;
                 } else {
                     pointA = this.getPoint1();
                     pointB = this.getPoint2();
@@ -473,104 +497,106 @@ public class WTriangle {
                     segmentAB = this.getSegment1();
                     segmentBC = this.getSegment2();
                     segmentAC = this.getSegment3();
+                    disparu = false;
                 }
             }
+            if (!disparu) {
+                double angleBC = (new Vecteur(points.get(pointB), points.get(pointC)).calculAngle());
+                double angleCB = (new Vecteur(points.get(pointC), points.get(pointB)).calculAngle());
 
-            double angleBC = (new Vecteur(points.get(pointB), points.get(pointC)).calculAngle());
-            double angleCB = (new Vecteur(points.get(pointC), points.get(pointB)).calculAngle());
+                double angleAB = (new Vecteur(points.get(pointA), points.get(pointB)).calculAngle());
+                double angleAC = (new Vecteur(points.get(pointA), points.get(pointC)).calculAngle());
 
-            double angleAB = (new Vecteur(points.get(pointA), points.get(pointB)).calculAngle());
-            double angleAC = (new Vecteur(points.get(pointA), points.get(pointC)).calculAngle());
+                Vecteur pente1 = this.calculPente(points);
 
-            Vecteur pente1 = this.calculPente(points);
+                if ((pente1.getValx() == 0) && (pente1.getValy() == 0)) {
+                    // projection sur le triangle entier dans le cas d'une surface horizontale
+                    bassinVersant.add(this);
 
-            if ((pente1.getValx() == 0) && (pente1.getValy() == 0)) {
-                // projection sur le triangle entier dans le cas d'une surface horizontale
-                bassinVersant.add(this);
+                    if (segments.get(segmentAB).getTridroit() >= 0) {
+                        if (triangles.get(segments.get(segmentAB).getTridroit()).equals(this)) {
+                            if (segments.get(segmentAB).getTrigauche() >= 0) {
+                                triangles.get(segments.get(segmentAB).getTrigauche()).calculProjete(segmentAB, triangles, segments, points, bassinVersant);
 
-                if (segments.get(segmentAB).getTridroit() >= 0) {
-                    if (triangles.get(segments.get(segmentAB).getTridroit()).equals(this)) {
-                        if (segments.get(segmentAB).getTrigauche() >= 0) {
-                            triangles.get(segments.get(segmentAB).getTrigauche()).calculProjete(segmentAB, triangles, segments, points, bassinVersant);
-
+                            }
+                        } else {
+                            triangles.get(segments.get(segmentAB).getTridroit()).calculProjete(segmentAB, triangles, segments, points, bassinVersant);
                         }
-                    } else {
-                        triangles.get(segments.get(segmentAB).getTridroit()).calculProjete(segmentAB, triangles, segments, points, bassinVersant);
                     }
-                }
 
-                if (segments.get(segmentAC).getTridroit() >= 0) {
-                    if (triangles.get(segments.get(segmentAC).getTridroit()).equals(this)) {
-                        if (segments.get(segmentAC).getTrigauche() >= 0) {
+                    if (segments.get(segmentAC).getTridroit() >= 0) {
+                        if (triangles.get(segments.get(segmentAC).getTridroit()).equals(this)) {
+                            if (segments.get(segmentAC).getTrigauche() >= 0) {
 
-                            triangles.get(segments.get(segmentAC).getTrigauche()).calculProjete(segmentAC, triangles, segments, points, bassinVersant);
+                                triangles.get(segments.get(segmentAC).getTrigauche()).calculProjete(segmentAC, triangles, segments, points, bassinVersant);
 
+                            }
+                        } else {
+                            triangles.get(segments.get(segmentAC).getTridroit()).calculProjete(segmentAC, triangles, segments, points, bassinVersant);
                         }
-                    } else {
-                        triangles.get(segments.get(segmentAC).getTridroit()).calculProjete(segmentAC, triangles, segments, points, bassinVersant);
                     }
-                }
-            } else {
-
-                double anglePente = pente1.calculAngle();
-
-                if (((Vecteur.distAngle(angleBC, anglePente) - Vecteur.distAngle(angleBC, angleCB)) < approximationAngulaire) || (Math.abs(angleBC - anglePente) < approximationAngulaire)) {
-                    //1er cas: pas de propagation:
-                    //rien pour le moment, il n'y a pas de propagation donc pas d'appel récursif
-
                 } else {
-                    //2eme cas : propagation totale du triangle
-                    if (((Vecteur.distAngle(angleAB, anglePente) - Vecteur.distAngle(angleAB, angleAC)) < approximationAngulaire) || (Math.abs(angleAB - anglePente) < approximationAngulaire)) {
 
-                        // projection sur le triangle entier
-                        bassinVersant.add(this);
+                    double anglePente = pente1.calculAngle();
 
-                        if (segments.get(segmentAB).getTridroit() >= 0) {
-                            if (triangles.get(segments.get(segmentAB).getTridroit()).equals(this)) {
-                                if (segments.get(segmentAB).getTrigauche() >= 0) {
-                                    triangles.get(segments.get(segmentAB).getTrigauche()).calculProjete(segmentAB, triangles, segments, points, bassinVersant);
+                    if (((Vecteur.distAngle(angleBC, anglePente) - Vecteur.distAngle(angleBC, angleCB)) < approximationAngulaire) || (Math.abs(angleBC - anglePente) < approximationAngulaire)) {
+                        //1er cas: pas de propagation:
+                        //rien pour le moment, il n'y a pas de propagation donc pas d'appel récursif
 
+                    } else {
+                        //2eme cas : propagation totale du triangle
+                        if (((Vecteur.distAngle(angleAB, anglePente) - Vecteur.distAngle(angleAB, angleAC)) < approximationAngulaire) || (Math.abs(angleAB - anglePente) < approximationAngulaire)) {
+
+                            // projection sur le triangle entier
+                            bassinVersant.add(this);
+
+                            if (segments.get(segmentAB).getTridroit() >= 0) {
+                                if (triangles.get(segments.get(segmentAB).getTridroit()).equals(this)) {
+                                    if (segments.get(segmentAB).getTrigauche() >= 0) {
+                                        triangles.get(segments.get(segmentAB).getTrigauche()).calculProjete(segmentAB, triangles, segments, points, bassinVersant);
+
+                                    }
+                                } else {
+                                    triangles.get(segments.get(segmentAB).getTridroit()).calculProjete(segmentAB, triangles, segments, points, bassinVersant);
                                 }
-                            } else {
-                                triangles.get(segments.get(segmentAB).getTridroit()).calculProjete(segmentAB, triangles, segments, points, bassinVersant);
                             }
-                        }
 
-                        if (segments.get(segmentAC).getTridroit() > 0) {
-                            if (triangles.get(segments.get(segmentAC).getTridroit()).equals(this)) {
-                                if (segments.get(segmentAC).getTrigauche() > 0) {
-                                    triangles.get(segments.get(segmentAC).getTrigauche()).calculProjete(segmentAC, triangles, segments, points, bassinVersant);
+                            if (segments.get(segmentAC).getTridroit() >= 0) {
+                                if (triangles.get(segments.get(segmentAC).getTridroit()).equals(this)) {
+                                    if (segments.get(segmentAC).getTrigauche() >= 0) {
+                                        triangles.get(segments.get(segmentAC).getTrigauche()).calculProjete(segmentAC, triangles, segments, points, bassinVersant);
 
+                                    }
+                                } else {
+                                    triangles.get(segments.get(segmentAC).getTridroit()).calculProjete(segmentAC, triangles, segments, points, bassinVersant);
                                 }
-                            } else {
-                                triangles.get(segments.get(segmentAC).getTridroit()).calculProjete(segmentAC, triangles, segments, points, bassinVersant);
                             }
-                        }
 
-                    } else { // Les 2 cas précédents ont priorité sur les 2 qui suivent pour les cas qui sont en commun
+                        } else { // Les 2 cas précédents ont priorité sur les 2 qui suivent pour les cas qui sont en commun
 
-                        WPoint separation = new WPoint(0, 0, 0);
+                            WPoint separation = new WPoint(0, 0, 0);
 
-                        //3eme cas : propagation partielle sur le triangle, comprenant une partie du segment AC
-                        if (Vecteur.distAngle(angleCB, anglePente) <= Vecteur.distAngle(angleCB, angleAB)) {
+                            //3eme cas : propagation partielle sur le triangle, comprenant une partie du segment AC
+                            if (Vecteur.distAngle(angleCB, anglePente) <= Vecteur.distAngle(angleCB, angleAB)) {
 
-                            //projection de B sur le segmentAC suivant la pente 
-                            separation = WPoint.intersection(segments.get(segmentAC), points.get(pointB), pente, points);
-                            int separateur = points.size();
-                            points.add(separation);
-                            segments.get(segmentAC).decoupe(separateur, triangles.indexOf(this), pointB, bassinVersant, points, segments, triangles);
+                                //projection de B sur le segmentAC suivant la pente 
+                                separation = WPoint.intersection(segments.get(segmentAC), points.get(pointB), pente1, points);
+                                int separateur = points.size();
+                                points.add(separation);
+                                segments.get(segmentAC).decoupe(separateur, triangles.indexOf(this), pointC, bassinVersant, points, segments, triangles);
 
-                        }
+                            }
 
-                        //4ème cas : propagation partielle sur le triangle, comprenant une partie du segment AB
-                        if (Vecteur.distAngle(angleAC, anglePente) <= Vecteur.distAngle(angleAC, angleBC)) {
+                            //4ème cas : propagation partielle sur le triangle, comprenant une partie du segment AB
+                            if (Vecteur.distAngle(angleAC, anglePente) <= Vecteur.distAngle(angleAC, angleBC)) {
 
-                            // projection de C sur le segmentAB suivant la pente
-                            separation = WPoint.intersection(segments.get(segmentAB), points.get(pointC), pente, points);
-                            int separateur = points.size();
-                            points.add(separation);
-                            segments.get(segmentAB).decoupe(separateur, triangles.indexOf(this), pointB, bassinVersant, points, segments, triangles);
+                                // projection de C sur le segmentAB suivant la pente
+                                separation = WPoint.intersection(segments.get(segmentAB), points.get(pointC), pente1, points);
+                                int separateur = points.size();
+                                points.add(separation);
+                                segments.get(segmentAB).decoupe(separateur, triangles.indexOf(this), pointB, bassinVersant, points, segments, triangles);
 
+                            }
                         }
                     }
                 }

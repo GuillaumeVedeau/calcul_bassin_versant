@@ -20,15 +20,15 @@ coord Coordinate {
 point [
 #x y z pt
  #Point 0
- 0.0 1.0 2.0 
+ 0.0 1.0 0.0 
  #Point 1
- 1.0 1.0 3.0
+ 1.0 1.0 1.0
  #Point 2
- 2.0 1.0 4.0
+ 2.0 1.0 2.0
  #Point 3
- 3.0 1.0 5.0
+ 3.0 1.0 3.0
  #Point 4
- 4.0 1.0 6.0
+ 4.0 1.0 4.0
  #Point 5
  0.5 0.0 1.0 
  #Point 6
@@ -76,7 +76,7 @@ coordIndex [
 #triangle 12
 11	3	12	-1
 #triangle 13
-12	3	4	-1
+12	2	4	-1
 
 ] # end coordIndex
 

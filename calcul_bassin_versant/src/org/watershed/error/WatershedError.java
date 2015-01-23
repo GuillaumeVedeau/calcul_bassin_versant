@@ -21,29 +21,29 @@ public class WatershedError extends Exception {
 
     // error code saving 
     private int code;
-    
+
     // error codes 
     /**
      * An error has been thrown, but it shouldn't happen 5
      */
     public static final int WATERSHED_ERROR_NO_ERROR = 0;
 
-    
-
     public static final int WATERSHED_ERROR_MISC = 101;
     /**
      * Failed at generating a WPoint due to incorrect coordinates
      */
     public static final int WATERSHED_ERROR_ERROR_POINT_XYZ = 200;
-    
+
     public static final int WATERSHED_ERROR_POINT_NOT_FOUND = 201;
-    
+
+    public static final int WATERSHED_ERROR_TRIANGLE_INCORRECT = 202;
+
     public static final int WATERSHED_ERROR_PROJECTION_ERROR = 300;
-    
+
     public static final int WATERSHED_ERROR_ANGLE = 301;
-            
+
     public static final int WATERSHED_ERROR_INTERNAL_ERROR = 999;
-    
+
     private String message = "";
 
     /**
@@ -99,36 +99,38 @@ public class WatershedError extends Exception {
             case WATERSHED_ERROR_NO_ERROR:
                 ret = "no error";
                 break;
-           
+
             case WATERSHED_ERROR_MISC:
                 ret = "no error";
-                break; 
+                break;
             case WATERSHED_ERROR_INTERNAL_ERROR:
                 ret = "internal errorr";
                 break;
-                 case WATERSHED_ERROR_ERROR_POINT_XYZ:
+            case WATERSHED_ERROR_ERROR_POINT_XYZ:
                 ret = "internal errorr";
                 break;
-                
-                case WATERSHED_ERROR_POINT_NOT_FOUND:
+
+            case WATERSHED_ERROR_POINT_NOT_FOUND:
                 ret = "WPoint is not part of the triangulation";
                 break;
-                    case WATERSHED_ERROR_PROJECTION_ERROR:
-                ret = "PArallel line and vector";
+            case WATERSHED_ERROR_TRIANGLE_INCORRECT:
+                ret = "Wtriangle are missing Wpoint in the initialisation";
                 break;
-                        case WATERSHED_ERROR_ANGLE:
+            case WATERSHED_ERROR_PROJECTION_ERROR:
+                ret = "Parallel line and vector";
+                break;
+            case WATERSHED_ERROR_ANGLE:
                 ret = "Invalid Vector";
                 break;
-                
+
             default:
                 return message;
 
         }
-        if(message.isEmpty()){
+        if (message.isEmpty()) {
             return ret;
-        }
-        else{
-            return (ret + ", " + message) ;
+        } else {
+            return (ret + ", " + message);
         }
     }
 }
